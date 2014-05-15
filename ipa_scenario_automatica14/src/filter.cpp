@@ -136,7 +136,7 @@ public:
     this->n_.getParam("samples", plane_samples_);
     
     //get params for each measurement
-	XmlRpc::XmlRpcValue workspace;
+	XmlRpc::XmlRpcValue workspace, ground;
 	workspace_.clear();
 	if(this->n_.getParam("workspace",workspace))
 	{
@@ -148,6 +148,19 @@ public:
 				pt.y = (double)workspace[i+1];
 				workspace_.push_back(pt);
 			}
+		}
+	}
+	
+	if(this->n_.getParam("ground",ground))
+	{
+		if(ground.getType() != XmlRpc::XmlRpcValue::TypeArray || ground.size()!=4) ROS_ERROR("ground is a list of 4 values!");
+		else {
+			plane_n_(0) = (double)ground[0];
+			plane_n_(1) = (double)ground[1];
+			plane_n_(2) = (double)ground[2];
+			plane_d_ = (double)ground[3];
+			
+			plane_present_ = true;
 		}
 	}
     
@@ -181,6 +194,9 @@ public:
 			const float l = plane_n_.norm();
 			plane_n_/=l;
 			plane_d_/=l;
+			
+			ROS_INFO("found ground plane: %f %f %f %f",
+				plane_n_(0), plane_n_(1), plane_n_(2), plane_d_);
 		}
 		
 		return plane_present_;
