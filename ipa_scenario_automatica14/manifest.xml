@@ -1,0 +1,17 @@
+<package>
+  <description brief="ipa_scenario_automatica14">
+
+     ipa_scenario_automatica14
+
+  </description>
+  <author>josh</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/ipa_scenario_automatica14</url>
+  <depend package="roscpp"/>
+  <depend package="cob_3d_mapping_msgs"/>
+  <depend package="cob_3d_segmentation"/>
+
+</package>
+
+

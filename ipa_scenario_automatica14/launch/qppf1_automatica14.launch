@@ -1,0 +1,10 @@
+<launch>
+  <arg name="point_cloud_in" default="/camera/depth/points_xyzrgb"/>
+
+  <node name="qppf_node1" pkg="cob_3d_segmentation" type="qppf_node1" output="screen">
+	<remap from="/camera/rgb/points" to="$(arg point_cloud_in)"/>
+	<param name="filter" value="10" />
+	<param name="only_planes" value="true" />
+  </node>
+</launch>
+
