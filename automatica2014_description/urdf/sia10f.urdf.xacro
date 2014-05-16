@@ -1,0 +1,27 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="sia10f">
+
+    <xacro:include filename="$(find motoman_sia10f_support)/urdf/sia10f_macro.xacro" />
+
+    <!-- cell -->
+    <xacro:include filename="$(find automatica2014_description)/urdf/cell.urdf.xacro" />
+
+    <!-- arm -->
+    <joint name="sia10f_base_joint" type="fixed" >
+        <parent link="base_link" />
+        <child link="sia10f_base_link" />
+        <xacro:insert_block name="sia10f_origin" />
+    </joint>
+    
+    <xacro:motoman_sia10f prefix="sia10f_"/>
+
+    <!-- gripper -->
+
+    <!-- gripper -->
+    <joint name="gripper_joint" type="fixed" >
+        <parent link="sia10f_link_t" />
+        <child link="gripper_grasp_link" />
+    </joint>
+    
+    <link name="gripper_grasp_link" />
+
+</robot>

@@ -1,0 +1,26 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="ur5">
+
+    <xacro:include filename="$(find ur_description)/urdf/ur5_joint_limited.urdf.xacro" />
+    
+    <!-- cell -->
+    <xacro:include filename="$(find automatica2014_description)/urdf/cell.urdf.xacro" />
+
+    <!-- arm -->
+    <joint name="ur5_base_joint" type="fixed" >
+        <parent link="base_link" />
+        <child link="ur5_base_link" />
+        <xacro:insert_block name="ur5_origin" />
+    </joint>
+    
+    <xacro:ur5_robot prefix="ur5_"/>
+
+    <!-- gripper -->
+    <joint name="gripper_joint" type="fixed" >
+        <parent link="ur5_wrist_3_link" />
+        <child link="gripper_grasp_link" />
+    </joint>
+    
+    <link name="gripper_grasp_link" />
+
+
+</robot>

@@ -1,0 +1,17 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="workspace">
+    <xacro:include filename="$(find cob_description)/urdf/common.xacro" />
+    <xacro:include filename="$(find cob_description)/urdf/sensors/kinect.urdf.xacro" />
+
+    <!-- cell -->
+    <xacro:include filename="$(find automatica2014_description)/urdf/cell.urdf.xacro" />
+
+    <!-- environment camera -->    
+    <xacro:cob_kinect_v0 name="cam3d_env" ros_topic="cam3d_env" parent="base_link">
+        <xacro:insert_block name="cam3d_env_origin" />
+    </xacro:cob_kinect_v0>
+
+    <!-- monitor camera -->    
+    <xacro:cob_kinect_v0 name="cam3d_mon" ros_topic="cam3d_mon" parent="base_link">
+        <xacro:insert_block name="cam3d_mon_origin" />
+    </xacro:cob_kinect_v0>
+</robot>
