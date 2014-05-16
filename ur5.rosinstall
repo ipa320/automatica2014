@@ -1,14 +1,7 @@
-# IT IS UNLIKELY YOU WANT TO EDIT THIS FILE BY HAND,
-# UNLESS FOR REMOVING ENTRIES.
-# IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
-# USE THE rosinstall TOOL INSTEAD.
-# IF YOU CHANGE IT, USE rosinstall FOR THE CHANGES TO TAKE EFFECT
-- git: {local-name: moveit_ros, uri: 'git@github.com:ipa-mdl/moveit_ros.git', version: nan_fix}
 - git: {local-name: automatica2014, uri: 'git@github.com:ipa320/automatica2014.git',
     version: master}
-- git: {local-name: cob_perception_common, uri: 'git@github.com:ipa320/cob_perception_common.git', version: hydro_dev}
-- git: {local-name: cob_environment_perception, uri: 'git@github.com:ipa-josh/cob_environment_perception.git',
-    version: hydro_automatica14}
+- git: {local-name: moveit_ros, uri: 'git@github.com:ipa-mdl/moveit_ros.git',
+    version: nan_fix}
 - git: {local-name: moveit_core, uri: 'https://github.com/ros-planning/moveit_core.git',
     version: hydro-devel}
 - git: {local-name: moveit_planners, uri: 'https://github.com/ros-planning/moveit_planners.git',

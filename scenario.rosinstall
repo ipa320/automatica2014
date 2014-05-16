@@ -1,0 +1,4 @@
+- git: {local-name: automatica2014, uri: 'git@github.com:ipa320/automatica2014.git', version: master}
+- git: {local-name: cob_perception_common, uri: 'git@github.com:ipa320/cob_perception_common.git', version: hydro_dev}
+- git: {local-name: cob_environment_perception, uri: 'git@github.com:ipa-josh/cob_environment_perception.git',
+    version: hydro_automatica14}
