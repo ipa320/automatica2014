@@ -232,10 +232,6 @@ public:
 		q.z() = s.shapes[i].pose.orientation.z;
 		q.w() = s.shapes[i].pose.orientation.w;
 		
-		//unset, otherwise visualization will be messed up...
-		s.shapes[i].pose = geometry_msgs::Pose();
-		//s.shapes[i].params[3] = -s.shapes[i].params[3];
-		
 		const float d = center.dot(n);
 
 		const bool crit = std::abs(n.dot(plane_n_)) < angle_tolerance_ ||
