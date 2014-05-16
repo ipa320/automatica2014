@@ -97,10 +97,24 @@ class Filter_Node : public As_Node
   int min_weight_, max_weight_;
   pcl::PointCloud<pcl::PointXYZ> workspace_;
   
+  double max_dist2_;
+  int min_samples_;
+  
   bool plane_present_;
   Eigen::Vector3f plane_n_;
   float plane_d_;
   int plane_samples_;
+  
+  struct Obj {
+	  Eigen::Vector3f center_;
+	  int times_seen_;
+	  bool have_seen_;
+	  
+	  Obj(const Eigen::Vector3f &c) : center_(c), times_seen_(1), have_seen_(true)
+	  {}
+  };
+  
+  std::vector<Obj> objs_;
   
 public:
   // Constructor
@@ -126,6 +140,8 @@ public:
 	min_weight_ = 0;
 	max_weight_ = std::numeric_limits<int>::max();
 	plane_samples_ = 5;
+	max_dist2_ = 0.03;
+	min_samples_ = 5;
 	
     this->n_.getParam("angle_tolerance", angle_tolerance_);
     this->n_.getParam("distance_tolerance", distance_tolerance_);
@@ -134,6 +150,10 @@ public:
     this->n_.getParam("max_weight", max_weight_);
     
     this->n_.getParam("samples", plane_samples_);
+    
+    this->n_.getParam("objs_min_samples", min_samples_);
+    this->n_.getParam("objs_max_dist", max_dist2_);
+    max_dist2_*=max_dist2_;
     
     //get params for each measurement
 	XmlRpc::XmlRpcValue workspace, ground;
@@ -201,11 +221,52 @@ public:
 		
 		return plane_present_;
 	}
+	
+	void cleanObjects() {
+		for(size_t i=0; i<objs_.size(); i++) {
+			if(!objs_[i].have_seen_) {
+				objs_.erase(objs_.begin()+i);
+				--i;
+				continue;
+			}
+			objs_[i].have_seen_ = false;
+		}
+	}
+	
+	bool addObject(Eigen::Vector3f &center) {
+		bool found = false;
+		Obj *o = NULL;
+		for(size_t i=0; i<objs_.size(); i++) {
+			if( ((objs_[i].center_/objs_[i].times_seen_)-center).squaredNorm()<=max_dist2_ ) {
+				
+				if(!found) {
+					found = true;
+					o = &objs_[i];
+					o->times_seen_++;
+					o->center_ += center;
+					o->have_seen_ = true;
+				} else {
+					o->times_seen_ += objs_[i].times_seen_;
+					o->center_ += objs_[i].center_;
+				}
+				
+			}
+		}
+		if(!found) {
+			objs_.push_back(Obj(center));
+			o = &objs_.back();
+		}
+		
+		if(o)
+			center = o->center_/o->times_seen_;
+		return o && o->times_seen_>=min_samples_;
+	}
 
   void
   shapesSubCallback(cob_3d_mapping_msgs::ShapeArray s)
   {
 	publishWorkspace(s.header);
+	cleanObjects();
 	
 	if(s.shapes.size()<1) return;
 	
@@ -247,9 +308,14 @@ public:
 
 		if( crit ) continue;
 
-		objs.shapes.push_back(s.shapes[i]);
-		
-		publishMarker(center, q.toRotationMatrix().col(1),s.header, i);
+		if(addObject(center)) {
+			s.shapes[i].pose.position.x = center(0);
+			s.shapes[i].pose.position.y = center(1);
+			s.shapes[i].pose.position.z = center(2);
+			
+			objs.shapes.push_back(s.shapes[i]);
+			publishMarker(center, q.toRotationMatrix().col(1),s.header, i);
+		}
 	}
 	
 	shapes_pub_.publish(objs);
