@@ -1,0 +1,20 @@
+<launch>
+  <!-- The planning of MoveIt for the Automatica2014 demo -->
+
+  <rosparam command="load" file="$(find automatica2014_bringup)/config/joint_names_sia10f.yaml"/>
+ 
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/sia10f.urdf.xacro'" />
+
+  <include file="$(find motoman_driver)/launch/robot_interface_streaming_$(arg controller).launch">
+		<arg name="robot_ip"   value="$(arg robot_ip)" />
+  </include>
+
+  <!-- publish the robot state (tf transforms) -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <include file="$(find automatica2014_sia10f_moveit_config)/launch/move_group.launch">
+    <arg name="publish_monitored_planning_scene" value="true" />
+  </include>
+
+</launch>
+
