@@ -1,5 +1,7 @@
 - git: {local-name: automatica2014, uri: 'https://github.com/ipa320/automatica2014.git',
     version: master}
+- git: {local-name: motoman, uri: 'https://github.com/ipa320/motoman',
+    version: hydro-devel}
 - git: {local-name: moveit_ros, uri: 'https://github.com/ipa-mdl/moveit_ros.git',
     version: nan_fix}
 - git: {local-name: moveit_core, uri: 'https://github.com/ros-planning/moveit_core.git',
