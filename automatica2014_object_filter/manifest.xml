@@ -1,13 +1,13 @@
 <package>
-  <description brief="ipa_scenario_automatica14">
+  <description brief="automatica14_object_filter">
 
-     ipa_scenario_automatica14
+     automatica14_object_filter
 
   </description>
   <author>josh</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/ipa_scenario_automatica14</url>
+  <url>http://ros.org/wiki/automatica14_object_filter</url>
   <depend package="roscpp"/>
   <depend package="cob_3d_mapping_msgs"/>
   <depend package="cob_3d_segmentation"/>
