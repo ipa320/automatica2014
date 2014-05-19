@@ -34,3 +34,5 @@ arm:
     - TRRTkConfigDefault
     - PRMkConfigDefault
     - PRMstarkConfigDefault
+  projection_evaluator: joints(sia10f_joint_s,sia10f_joint_l)
+  longest_valid_segment_fraction: 0.05
