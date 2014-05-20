@@ -1,0 +1,4 @@
+chains: ["gripper_controller"]
+
+baudrate: 500K
+sync_interval: 10

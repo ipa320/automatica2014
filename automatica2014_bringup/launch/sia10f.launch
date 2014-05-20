@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
   <!-- The planning of MoveIt for the Automatica2014 demo -->
   
@@ -18,6 +19,18 @@
   <include file="$(find automatica2014_sia10f_moveit_config)/launch/move_group.launch">
     <arg name="publish_monitored_planning_scene" value="true" />
   </include>
+
+  <!-- start gripper -->
+  <!-- This is the CANopen ROS wrapper node -->
+  <rosparam command="load" ns="gripper_driver" file="$(find automatica2014_bringup)/config/pg70_canopen.yaml" />
+  <node ns="gripper_driver" name="pg70_canopen_ros" pkg="ipa_canopen_ros" type="ipa_canopen_ros" cwd="node" respawn="false" output="screen" />  
+  <!-- The trajectory controller listens for JointTrajectoryFollowAction and sends velocity commands to the CANopen node -->
+  <rosparam command="load" ns="gripper_controller" file="$(find automatica2014_bringup)/config/pg70.yaml" />
+  <node ns="gripper_controller" name="joint_trajectory_controller" pkg="cob_trajectory_controller" type="cob_trajectory_controller" cwd="node" respawn="false" output="screen" />
+
+  <!-- upload default parameters -->
+  <rosparam command="load" ns="/script_server/gripper" file="$(find automatica2014_bringup)/config/pg70_joint_configurations.yaml"/>
+
 
 </launch>
 
