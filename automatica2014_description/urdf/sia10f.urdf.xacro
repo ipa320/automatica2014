@@ -4,6 +4,9 @@
 
     <!-- cell -->
     <xacro:include filename="$(find automatica2014_description)/urdf/cell.urdf.xacro" />
+    
+     <!-- gripper and flange -->
+    <xacro:include filename="$(find automatica2014_description)/urdf/gripper.urdf.xacro" />
 
     <!-- arm -->
     <joint name="sia10f_base_joint" type="fixed" >
@@ -17,11 +20,16 @@
     <!-- gripper -->
 
     <!-- gripper -->
-    <joint name="gripper_joint" type="fixed" >
+    <joint name="flange_joint" type="fixed" >
         <parent link="sia10f_link_t" />
-        <child link="gripper_grasp_link" />
+        <child link="gripper_flange_link" />
+        <xacro:insert_block name="flange_origin" />
     </joint>
     
-    <link name="gripper_grasp_link" />
-
+    <joint name="gripper_joint" type="fixed" >
+        <parent link="gripper_flange_link" />
+        <child link="gripper_grasp_link" />
+        <xacro:insert_block name="gripper_origin" />
+    </joint>
+    
 </robot>
