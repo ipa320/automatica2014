@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="sia10f">
 
     <xacro:include filename="$(find motoman_sia10f_support)/urdf/sia10f_macro.xacro" />
@@ -20,6 +21,8 @@
     <joint name="gripper_joint" type="fixed" >
         <parent link="sia10f_link_t" />
         <child link="gripper_grasp_link" />
+	<limit effort="100" lower="-0.1" upper="1.1" velocity="1.0"/>
+	<calibration rising="0.0"/>
     </joint>
     
     <link name="gripper_grasp_link" />
