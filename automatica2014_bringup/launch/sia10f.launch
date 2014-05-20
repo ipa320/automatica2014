@@ -5,18 +5,22 @@
   <arg name="robot_ip" default="10.0.0.2"/>
   <arg name="controller" default="fs100"/>
 
+  <remap from="robot_description" to="/sia10f_description"/>
+  <remap from="/robot_description" to="/sia10f_description"/>
+  <remap from="/sia10f_move_group/joint_states" to="/joint_states"/>
+
   <rosparam command="load" file="$(find automatica2014_bringup)/config/joint_names_sia10f.yaml"/>
  
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/sia10f.urdf.xacro'" />
+  <param name="/sia10f_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/sia10f.urdf.xacro'" />
 
-  <include file="$(find motoman_driver)/launch/robot_interface_streaming_$(arg controller).launch">
+  <include ns="sia10f_controller" file="$(find motoman_driver)/launch/robot_interface_streaming_$(arg controller).launch">
 		<arg name="robot_ip"   value="$(arg robot_ip)" />
   </include>
 
   <!-- publish the robot state (tf transforms) -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher" />
 
-  <include file="$(find automatica2014_sia10f_moveit_config)/launch/move_group.launch">
+  <include ns="sia10f_move_group" file="$(find automatica2014_sia10f_moveit_config)/launch/move_group.launch">
     <arg name="publish_monitored_planning_scene" value="true" />
   </include>
 
