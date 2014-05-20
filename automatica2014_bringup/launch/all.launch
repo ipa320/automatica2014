@@ -18,11 +18,11 @@
 		  </include>
 	</group>
 
-	<!--group>
+	<group>
 		<machine name="pc3" address="$(arg pc3)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
 		  <include file="$(find automatica2014_bringup)/launch/ur5.launch">
 		  </include>
-	</group-->
+	</group>
 
 </launch>
 
