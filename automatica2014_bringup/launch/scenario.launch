@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <launch>
+  <remap from="robot_description" to="/workspace_description"/>
+  <remap from="/robot_description" to="/workspace_description"/>
+
+  <param name="/workspace_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/workspace.urdf.xacro'" />
+  <!-- publish the robot state (tf transforms) -->
+  <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher" />
 
 </launch>
 
