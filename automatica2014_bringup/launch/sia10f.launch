@@ -7,7 +7,8 @@
 
   <remap from="robot_description" to="/sia10f_description"/>
   <remap from="/robot_description" to="/sia10f_description"/>
-  <remap from="/sia10f_move_group/joint_states" to="/joint_states"/>
+  <remap from="/joint_states" to="/sia10f_joint_states"/>
+  <remap from="/sia10f_move_group/joint_states" to="/sia10f_joint_states"/>
 
   <rosparam command="load" file="$(find automatica2014_bringup)/config/joint_names_sia10f.yaml"/>
  
