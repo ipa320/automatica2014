@@ -4,12 +4,18 @@
   <arg name="robot_ip" default="10.0.1.3"/>
   <arg name="prefix" default="ur5_"/>
 
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/ur5.urdf.xacro'" />
+  <remap from="robot_description" to="/ur5_description"/>
+  <remap from="/robot_description" to="/ur5_description"/>
+  <remap from="/joint_states" to="/ur5_joint_states"/>
+  <remap from="/ur5_move_group/joint_states" to="/ur5_joint_states"/>
+  
+
+  <param name="/ur5_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/ur5.urdf.xacro'" />
 
   <!-- universal robot arm -->
   <node name="ur_driver" ns="ur5_controller" pkg="ur_driver" type="driver.py" args="$(arg robot_ip)" output="screen">
-     <remap from="/ur5_controller/joint_states" to="/joint_states"/>
-     <remap from="/ur5_controller/robot_description" to="/robot_description"/>
+     <remap from="/ur5_controller/joint_states" to="/ur5_joint_states"/>
+     <remap from="/ur5_controller/robot_description" to="/ur5_description"/>
      <param name="prefix" value="$(arg prefix)"/>
   </node>
 
@@ -19,9 +25,9 @@
   </node-->
 
   <!-- publish the robot state (tf transforms) -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher" />
 
-  <include file="$(find automatica2014_ur5_moveit_config)/launch/move_group.launch">
+  <include ns="ur5_move_group" file="$(find automatica2014_ur5_moveit_config)/launch/move_group.launch">
     <arg name="publish_monitored_planning_scene" value="true" />
   </include>
 
