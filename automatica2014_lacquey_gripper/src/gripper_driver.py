@@ -24,7 +24,12 @@ class GripperAction:
         self._joint_states.position = [0.0]
         self._joint_states.velocity = [0.0]
         self._joint_states.effort = [0.0]
-
+        
+        # activate_gripper
+        req = SetIOStateRequest()
+        req.state.pin = 3 #TODO
+        req.state.state = 0 #TODO
+        # TODO call service
 
 
     def execute_cb(self, goal):
@@ -34,10 +39,14 @@ class GripperAction:
         self._joint_states.position = [position]
         if position <= 0.5: # close
             print "closing gripper"
-            # TODO call UR IO service
+            req = SetIOStateRequest()
+            req.state.pin = 3 #TODO
+            req.state.state = 0 #TODO
         else: # open
             print "open gripper"
-            # TODO call UR IO service
+            req = SetIOStateRequest()
+            req.state.pin = 3 #TODO
+            req.state.state = 1 #TODO
         
         # call IO Service from UR5 robot
         try:
@@ -48,9 +57,7 @@ class GripperAction:
             return
         
         try:
-            req = SetIOStateRequest()
-            req.state.pin = 3
-            req.state.state = 0.1
+            
             self._set_io(req)
         except rospy.ServiceException:
             print "Service call failed, aborting action"
