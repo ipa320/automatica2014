@@ -1,0 +1,38 @@
+<package>
+
+  <name>automatica2014_object_filter</name>
+  <version>0.2.0</version>
+  <description>
+     An automatically generated package with all the configuration and launch files for using the sia10f with the MoveIt Motion Planning Framework
+  </description>
+  <author email="assistant@moveit.ros.org">MoveIt Setup Assistant</author>
+  <maintainer email="assistant@moveit.ros.org">MoveIt Setup Assistant</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://moveit.ros.org/</url>
+  <url type="bugtracker">https://github.com/ros-planning/moveit_setup_assistant/issues</url>
+  <url type="repository">https://github.com/ros-planning/moveit_setup_assistant</url>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>pcl</build_depend>
+  <build_depend>pcl_ros</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>visualization_msgs</build_depend>
+  <build_depend>cob_3d_segmentation</build_depend>
+  <build_depend>cob_3d_mapping_msgs</build_depend>
+
+  <run_depend>cob_3d_mapping_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>pcl</run_depend>
+  <run_depend>pcl_ros</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>visualization_msgs</run_depend>
+  <run_depend>cob_3d_segmentation</run_depend>
+
+  <build_depend>libpcl-all-dev</build_depend>
+  <run_depend>libpcl-all</run_depend>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  
+</package>
