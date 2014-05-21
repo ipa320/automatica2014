@@ -6,5 +6,15 @@
   <!-- publish the robot state (tf transforms) -->
   <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher" />
 
+  <include file="$(find cob_bringup)/drivers/openni2.launch" >
+     <arg name="name" value="cam3d_env"/>
+     <arg name="device_id" value="#1"/>
+   </include>
+
+  <include file="$(find cob_bringup)/drivers/openni2.launch" >
+     <arg name="name" value="cam3d_mon"/>
+     <arg name="device_id" value="#2"/>
+   </include>
+
 </launch>
 
