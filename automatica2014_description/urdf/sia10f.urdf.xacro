@@ -29,6 +29,8 @@
 		<joint name="gripper_joint" type="fixed" >
 		    <parent link="gripper_flange_link" />
 		    <child link="gripper_grasp_link" />
+		    <limit effort="100" lower="-0.1" upper="1.1" velocity="1.0"/>
+		    <calibration rising="0.0"/>
 		    <xacro:insert_block name="gripper_origin" />
 		</joint>
 		

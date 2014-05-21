@@ -5,7 +5,7 @@
   <arg name="robot_ip" default="10.0.0.2"/>
   <arg name="controller" default="fs100"/>
 
-  <remap from="/robot_description" to="robot_description"/>
+  <!--remap from="/robot_description" to="robot_description"/-->
   <remap from="/joint_states" to="joint_states"/>
 
   <rosparam command="load" file="$(find automatica2014_bringup)/config/joint_names_sia10f.yaml"/>
@@ -19,14 +19,15 @@
   <!-- publish the robot state (tf transforms) -->
   <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher" />
 
-  <include file="$(find automatica2014_sia10f_moveit_config)/launch/move_group.launch">
+  <include file="$(find automatica2014_sia10f_moveit_config)/launch/move_group.launch" if="false">
     <arg name="publish_monitored_planning_scene" value="true" />
   </include>
 
   <!-- start gripper -->
   <!-- This is the CANopen ROS wrapper node -->
   <rosparam command="load" ns="gripper_driver" file="$(find automatica2014_bringup)/config/pg70_canopen.yaml" />
-  <node ns="gripper_driver" name="pg70_canopen_ros" pkg="ipa_canopen_ros" type="ipa_canopen_ros" cwd="node" respawn="false" output="screen" />  
+  <node ns="gripper_driver" name="pg70_canopen_ros" pkg="ipa_canopen_ros" type="ipa_canopen_ros" cwd="node" respawn="false" output="screen">
+  </node>
   <!-- The trajectory controller listens for JointTrajectoryFollowAction and sends velocity commands to the CANopen node -->
   <rosparam command="load" ns="gripper_controller" file="$(find automatica2014_bringup)/config/pg70.yaml" />
   <node ns="gripper_controller" name="joint_trajectory_controller" pkg="cob_trajectory_controller" type="cob_trajectory_controller" cwd="node" respawn="false" output="screen" />
