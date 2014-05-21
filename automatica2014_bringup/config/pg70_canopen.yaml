@@ -1,4 +1,4 @@
 chains: ["gripper_controller"]
-
+device: /dev/pcan32
 baudrate: 500K
 sync_interval: 10

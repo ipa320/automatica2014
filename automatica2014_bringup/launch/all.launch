@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+
+	<arg name="pc1" default="scenario"/>
+	<arg name="pc2" default="robot-sia10f"/>
+	<arg name="pc3" default="robot-ur"/>
+
+	<group>
+		<machine name="pc1" address="$(arg pc1)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
+		  <include ns="scenario" file="$(find automatica2014_bringup)/launch/scenario.launch">
+		  </include>
+
+	</group>
+
+	<group>
+		<machine name="pc2" address="$(arg pc2)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
+		  <include ns="sia10f" file="$(find automatica2014_bringup)/launch/sia10f.launch">
+		  </include>
+	</group>
+
+	<group>
+                <remap from="/ur5/arm_controller/robot_description" to="/ur5/robot_description"/>
+                <remap from="/ur5/arm_controller/joint_states" to="/ur5/joint_states"/>
+		<machine name="pc3" address="$(arg pc3)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
+		  <include ns="ur5" file="$(find automatica2014_bringup)/launch/ur5.launch">
+		  </include>
+	</group>
+
+</launch>
+
