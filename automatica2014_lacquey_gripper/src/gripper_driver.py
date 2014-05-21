@@ -36,14 +36,15 @@ class GripperAction:
         print "action called"
         
         position = goal.trajectory.points[0].positions[0]
-        self._joint_states.position = [position]
         if position <= 0.5: # close
             print "closing gripper"
+            self._joint_states.position = [0.0] #TODO
             req = SetIOStateRequest()
             req.state.pin = 3 #TODO
             req.state.state = 0 #TODO
         else: # open
             print "open gripper"
+            self._joint_states.position = [1.0] #TODO
             req = SetIOStateRequest()
             req.state.pin = 3 #TODO
             req.state.state = 1 #TODO
