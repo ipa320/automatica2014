@@ -5,10 +5,10 @@
   <arg name="robot_ip" default="10.0.0.2"/>
   <arg name="controller" default="fs100"/>
 
-  <!--remap from="/robot_description" to="robot_description"/-->
-  <remap from="/joint_states" to="joint_states"/>
+  <remap from="robot_description" to="/robot_description"/>
+  <!--remap from="/joint_states" to="joint_states"/-->
 
-  <rosparam command="load" file="$(find automatica2014_bringup)/config/joint_names_sia10f.yaml"/>
+  <rosparam command="load" ns ="arm_controller" file="$(find automatica2014_bringup)/config/joint_names_sia10f.yaml"/>
  
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/sia10f.urdf.xacro'" />
 
@@ -30,7 +30,8 @@
   </node>
   <!-- The trajectory controller listens for JointTrajectoryFollowAction and sends velocity commands to the CANopen node -->
   <rosparam command="load" ns="gripper_controller" file="$(find automatica2014_bringup)/config/pg70.yaml" />
-  <node ns="gripper_controller" name="joint_trajectory_controller" pkg="cob_trajectory_controller" type="cob_trajectory_controller" cwd="node" respawn="false" output="screen" />
+  <node ns="gripper_controller" name="joint_trajectory_controller" pkg="cob_trajectory_controller" type="cob_trajectory_controller" cwd="node" respawn="false" output="screen">
+  </node>
 
   <!-- upload default parameters -->
   <rosparam command="load" ns="/script_server/gripper" file="$(find automatica2014_bringup)/config/pg70_joint_configurations.yaml"/>
