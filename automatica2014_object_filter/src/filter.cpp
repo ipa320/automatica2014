@@ -93,7 +93,7 @@ class Filter_Node : public As_Node
   ros::Publisher  shapes_pub_, shapes_all_pub_, marker_pub_, marker_workspace_pub_;
 
   //parameters
-  double angle_tolerance_, distance_tolerance_;
+  double angle_tolerance_, distance_tolerance_, distance_tolerance_max_;
   int min_weight_, max_weight_;
   pcl::PointCloud<pcl::PointXYZ> workspace_;
   
@@ -137,6 +137,7 @@ public:
 
 	angle_tolerance_ = 0.05;
 	distance_tolerance_ = 0.03;
+	distance_tolerance_max_ = 0.3;
 	min_weight_ = 0;
 	max_weight_ = std::numeric_limits<int>::max();
 	plane_samples_ = 5;
@@ -145,6 +146,7 @@ public:
 	
     this->n_.getParam("angle_tolerance", angle_tolerance_);
     this->n_.getParam("distance_tolerance", distance_tolerance_);
+    this->n_.getParam("distance_tolerance_max", distance_tolerance_max_);
     
     this->n_.getParam("min_weight", min_weight_);
     this->n_.getParam("max_weight", max_weight_);
@@ -293,17 +295,19 @@ public:
 		q.z() = s.shapes[i].pose.orientation.z;
 		q.w() = s.shapes[i].pose.orientation.w;
 		
-		const float d = center.dot(n);
+		const float d = center.dot(plane_n_);
 
 		const bool crit = std::abs(n.dot(plane_n_)) < angle_tolerance_ ||
 			plane_d_-d < distance_tolerance_ ||
+			plane_d_-d > distance_tolerance_max_ ||
 			s.shapes[i].weight < min_weight_ ||
 			s.shapes[i].weight > max_weight_ ||
 			(workspace_.size()>0 && !pcl::isXYPointIn2DXYPolygon(pt, workspace_));
-		ROS_DEBUG("criteria %s --> %f>=%f  %f>=%f %d<=%f<=%d",
+		ROS_DEBUG("criteria %s --> %f>=%f  %f>=%f %f<=%f %d<=%f<=%d",
 			crit?"No ":"Yes",
 			std::abs(n.dot(plane_n_)), angle_tolerance_,
 			plane_d_-d, distance_tolerance_,
+			plane_d_-d, distance_tolerance_max_,
 			min_weight_, s.shapes[i].weight, max_weight_);
 
 		if( crit ) continue;
