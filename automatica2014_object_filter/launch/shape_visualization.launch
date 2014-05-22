@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="shape_array_in" default="/shapes_array" />
+  <arg name="shape_array_in" default="shapes_array" />
   <arg name="name" default="shape_visualization" />
   <arg name="debug_mode" default="false"/>
   <arg name="prefix" value="gdb -ex run --args" if="$(arg debug_mode)"/>

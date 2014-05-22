@@ -1,10 +1,10 @@
 <launch>
   <include file="$(find automatica2014_object_filter)/launch/qppf1_automatica14.launch">
-	<arg name="point_cloud_in" value="/cam3d_env/depth_in/points_xyzrgb"/>
+	<arg name="point_cloud_in" value="cam3d_env/depth_in/points_xyzrgb"/>
   </include>
   <include file="$(find automatica2014_object_filter)/launch/filter.launch" />
   <include file="$(find automatica2014_object_filter)/launch/shape_visualization.launch">
-	<arg name="shape_array_in" value="/shapes_array_all_out" />
+	<arg name="shape_array_in" value="shapes_array_all_out" />
   </include>
 </launch>
 
