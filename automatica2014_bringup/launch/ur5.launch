@@ -13,8 +13,9 @@
   <node ns="arm_controller" name="ur_driver" pkg="ur_driver" type="driver.py" args="$(arg robot_ip)" output="screen">
      <param name="prefix" value="$(arg prefix)"/>
      <remap from="/arm_controller/robot_description" to="robot_description"/>
-     <remap from="/arm_controller/joint_states" to="joint_states"/>
   </node>
+
+  <node name="ur5_throttler" type="throttle" pkg="topic_tools" args="messages arm_controller/joint_states 25 joint_states" />
 
   <!-- TF Buffer Server -->
   <!--node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server">
@@ -22,7 +23,9 @@
   </node-->
 
   <!-- publish the robot state (tf transforms) -->
-  <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="publish_frequency" value="20.0"/>
+  </node>
 
   <include file="$(find automatica2014_ur5_moveit_config)/launch/move_group.launch">
     <arg name="publish_monitored_planning_scene" value="true" />
