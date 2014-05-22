@@ -1,54 +1,63 @@
     <robot xmlns:xacro="http://ros.org/wiki/xacro" name="sia10f">
 
-		<xacro:include filename="$(find motoman_sia10f_support)/urdf/sia10f_macro.xacro" />
+                <xacro:property name="gripper_origin">
+                    <origin xyz="0. 0. 0" rpy="0 0 0" />
+                </xacro:property>
 
-		<!-- cell -->
-		<xacro:include filename="$(find automatica2014_description)/urdf/cell.urdf.xacro" />
-		
-		 <!-- gripper and flange -->
-		<xacro:include filename="$(find automatica2014_description)/urdf/gripper.urdf.xacro" />
+                <xacro:property name="flange_origin">
+                    <origin xyz="0. 0. 0.03" rpy="0.0 0 1.5708" />
+                </xacro:property>
 
-		<!-- arm -->
-		<joint name="sia10f_base_joint" type="fixed" >
-		    <parent link="base_link" />
-		    <child link="sia10f_base_link" />
-		    <xacro:insert_block name="sia10f_origin" />
-		</joint>
-		
-		<xacro:motoman_sia10f prefix="sia10f_"/>
+                <xacro:include filename="$(find motoman_sia10f_support)/urdf/sia10f_macro.xacro" />
 
-		<!-- gripper -->
+                <!-- cell -->
+                <xacro:include filename="$(find automatica2014_description)/urdf/cell.urdf.xacro" />
+                
+                 <!-- gripper and flange -->
+                <xacro:include filename="$(find automatica2014_description)/urdf/gripper.urdf.xacro" />
 
-		<!-- gripper -->
-		<joint name="flange_joint" type="fixed" >
-		    <parent link="sia10f_link_t" />
-		    <child link="gripper_flange_link" />
-		    <xacro:insert_block name="flange_origin" />
-		</joint>
-		
-		<joint name="gripper_joint" type="fixed" >
-		    <parent link="gripper_flange_link" />
-		    <child link="gripper_grasp_link" />
-		    <xacro:insert_block name="gripper_origin" />
-		    <origin xyz="0.0 0.0 0.0" rpy="0 0 1.57"/>
-		</joint>
-		
-		<joint name="finger_left_joint" type="prismatic" >
-		    <parent link="gripper_grasp_link" />
-		    <child link="finger_left_link" />
-		    <limit effort="100" lower="-0.01" upper="0.062" velocity="1.0"/>
-		    <calibration rising="0.0"/>
-		    <origin xyz="0.0 0.0 0.096" rpy="-1.57 -1.57 3.14"/>
-		    <axis xyz="0 0 1" />
-		</joint>
-		
-		<joint name="finger_right_joint" type="prismatic" >
-			<parent link="gripper_grasp_link" />
-			<child link="finger_right_link" />
-			<limit effort="100" lower="-0.01" upper="0.062" velocity="1.0"/>
-			<calibration rising="0.0"/>
-			<origin xyz="0.0 0.0 0.096" rpy="-1.57 -1.57 0"/>
-			<axis xyz="0 0 1" />
-		</joint>
-		
-	</robot>
+                <!-- arm -->
+                <joint name="sia10f_base_joint" type="fixed" >
+                    <parent link="base_link" />
+                    <child link="sia10f_base_link" />
+                    <xacro:insert_block name="sia10f_origin" />
+                </joint>
+                
+                <xacro:motoman_sia10f prefix="sia10f_"/>
+
+                <!-- gripper -->
+
+                <!-- gripper -->
+                <joint name="flange_joint" type="fixed" >
+                    <parent link="sia10f_link_t" />
+                    <child link="gripper_flange_link" />
+                    <xacro:insert_block name="flange_origin" />
+                </joint>
+                <link name="gripper_flange_link">
+                    <visual>
+                        <geometry>
+                        <mesh filename="package://automatica2014_description/meshes/flange.stl"/>
+                        </geometry>
+                    </visual>
+                    <collision>
+                        <geometry>
+                            <mesh filename="package://automatica2014_description/meshes/flange.stl"/>
+                        </geometry>
+                    </collision>
+                </link>
+                
+                <joint name="gripper_joint" type="fixed" >
+                    <parent link="gripper_flange_link" />
+                    <child link="gripper_link" />
+                    <xacro:insert_block name="gripper_origin" />
+                </joint>
+                
+                <joint name="gripper_grasp_joint" type="fixed" >
+                    <parent link="gripper_link" />
+                    <child link="gripper_grasp_link" />
+                    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+                </joint>
+
+                <link name="gripper_grasp_link" />
+                   
+        </robot>

@@ -1,29 +1,20 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-
-     <xacro:property name="gripper_origin">
-        <origin xyz="0. 0. 0" rpy="0 0 0" />
-    </xacro:property>
-
-    <xacro:property name="flange_origin">
-        <origin xyz="0. 0. 0.03" rpy="0.0 0 1.5708" />
-    </xacro:property>
-    
      <link name="finger_left_link">
         <visual>
             <geometry>
             <mesh filename="package://automatica2014_description/meshes/finger_left.stl"/>
             </geometry>
             <material name="silver">
-					<color rgba="1 1 1 1"/>
-			</material>
+                            <color rgba="1 1 1 1"/>
+            </material>
         </visual>
         <collision>
             <geometry>
                 <mesh filename="package://automatica2014_description/meshes/finger_left.stl"/>
             </geometry>
             <material name="silver">
-					<color rgba="1 1 1 1"/>
-			</material>
+                            <color rgba="1 1 1 1"/>
+            </material>
         </collision>
     </link>
     
@@ -33,49 +24,55 @@
             <mesh filename="package://automatica2014_description/meshes/finger_right.stl"/>
             </geometry>
             <material name="silver">
-					<color rgba="1 1 1 1"/>
-			</material>
+                            <color rgba="1 1 1 1"/>
+            </material>
         </visual>
         <collision>
             <geometry>
                 <mesh filename="package://automatica2014_description/meshes/finger_right.stl"/>
             </geometry>
             <material name="silver">
-					<color rgba="1 1 1 1"/>
-			</material>
+                            <color rgba="1 1 1 1"/>
+            </material>
         </collision>
     </link>
     
-    <link name="gripper_grasp_link">
+    <link name="gripper_link">
         <visual>
             <geometry>
             <mesh filename="package://automatica2014_description/meshes/gripper.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="blue">
-					<color rgba="0 0 1 1"/>
-			</material>
+                            <color rgba="0 0 1 1"/>
+            </material>
         </visual>
         <collision>
             <geometry>
                 <mesh filename="package://automatica2014_description/meshes/gripper.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="blue">
-					<color rgba="0 0 1 1"/>
-			</material>
+                            <color rgba="0 0 1 1"/>
+            </material>
         </collision>
     </link>
     
-    <link name="gripper_flange_link">
-        <visual>
-            <geometry>
-            <mesh filename="package://automatica2014_description/meshes/flange.stl"/>
-            </geometry>
-        </visual>
-        <collision>
-            <geometry>
-                <mesh filename="package://automatica2014_description/meshes/flange.stl"/>
-            </geometry>
-        </collision>
-    </link>
+    <joint name="finger_left_joint" type="prismatic" >
+        <parent link="gripper_link" />
+        <child link="finger_left_link" />
+        <limit effort="100" lower="-0.01" upper="0.062" velocity="1.0"/>
+        <calibration rising="0.0"/>
+        <origin xyz="0.0 0.0 0.096" rpy="-1.57 -1.57 3.14"/>
+        <axis xyz="0 0 1" />
+    </joint>
+    
+    <joint name="finger_right_joint" type="prismatic" >
+            <parent link="gripper_link" />
+            <child link="finger_right_link" />
+            <limit effort="100" lower="-0.01" upper="0.062" velocity="1.0"/>
+            <calibration rising="0.0"/>
+            <origin xyz="0.0 0.0 0.096" rpy="-1.57 -1.57 0"/>
+            <axis xyz="0 0 1" />
+    </joint>
+
 
 </robot>
