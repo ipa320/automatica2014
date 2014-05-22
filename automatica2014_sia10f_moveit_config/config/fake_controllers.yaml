@@ -8,3 +8,7 @@ controller_list:
       - sia10f_joint_r
       - sia10f_joint_b
       - sia10f_joint_t
+  - name: fake_gripper_controller
+    joints:
+      - finger_left_joint
+      - finger_right_joint
