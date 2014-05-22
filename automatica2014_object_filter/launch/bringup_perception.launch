@@ -1,9 +1,9 @@
 <launch>
-  <include file="$(find ipa_scenario_automatica14)/launch/qppf1_automatica14.launch">
-	<arg name="point_cloud_in" value="/camera/depth/points_xyzrgb"/>
+  <include file="$(find automatica2014_object_filter)/launch/qppf1_automatica14.launch">
+	<arg name="point_cloud_in" value="/cam3d_env/depth_in/points_xyzrgb"/>
   </include>
-  <include file="$(find ipa_scenario_automatica14)/launch/filter.launch" />
-  <include file="$(find ipa_scenario_automatica14)/launch/shape_visualization.launch">
+  <include file="$(find automatica2014_object_filter)/launch/filter.launch" />
+  <include file="$(find automatica2014_object_filter)/launch/shape_visualization.launch">
 	<arg name="shape_array_in" value="/shapes_array_all_out" />
   </include>
 </launch>

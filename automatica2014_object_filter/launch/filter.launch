@@ -1,11 +1,13 @@
 <launch>
-  <node name="filter" pkg="ipa_scenario_automatica14" type="filter" output="screen">
+  <node name="filter" pkg="automatica2014_object_filter" type="filter" output="screen">
 	<remap from="/shapes_array" to="/shapes_array"/>
 
-	<param name="angle_tolerance" value="0.4" />
-	<param name="distance_tolerance" value="-0.44" />
-	<param name="min_weight" value="200" />
-	<param name="max_weight" value="1500" />
+	<param name="angle_tolerance" value="1." />
+	<param name="distance_tolerance" value="0.02" />
+	<param name="distance_tolerance_max" value="0.2" />
+	<param name="min_weight" value="400" />
+	<param name="max_weight" value="3000" />
+	<param name="objs_max_dist" value="0.06" />
 
 	<rosparam param="workspace">[-0.4,-0.4, 0.4,-0.4, 0.4,0.4, -0.4,0.4]</rosparam>
   </node>
