@@ -67,10 +67,10 @@
 
   </group> <!-- camera -->
 
-  <!-- Load reasonable defaults for the relative pose between cameras -->
+  <!-- Load reasonable defaults for the relative pose between cameras
   <include if="$(arg publish_tf)"
 	   file="$(find automatica2014_object_filter)/launch_camera/kinect_frames.launch">
     <arg name="camera" value="$(arg camera)" />
-  </include>
+  </include> -->
 
 </launch>
