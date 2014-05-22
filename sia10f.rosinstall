@@ -1,22 +1,6 @@
 - git: {local-name: automatica2014, uri: 'https://github.com/ipa320/automatica2014.git',
     version: master}
+- git: {local-name: motoman, uri: 'https://github.com/ipa320/motoman', version: hydro-devel}
+- git: {local-name: universal_robot, uri: 'https://github.com/ipa-mdl/universal_robot', version: digital_io}
 - git: {local-name: ipa_canopen, uri: 'https://github.com/ipa320/ipa_canopen.git',
     version: hydro_dev}
-- git: {local-name: motoman, uri: 'https://github.com/ipa320/motoman',
-    version: hydro-devel}
-- git: {local-name: moveit_ros, uri: 'https://github.com/ipa-mdl/moveit_ros.git',
-    version: nan_fix}
-- git: {local-name: moveit_core, uri: 'https://github.com/ros-planning/moveit_core.git',
-    version: hydro-devel}
-- git: {local-name: moveit_planners, uri: 'https://github.com/ros-planning/moveit_planners.git',
-    version: hydro-devel}
-- git: {local-name: moveit_setup_assistant, uri: 'https://github.com/ros-planning/moveit_setup_assistant.git',
-    version: hydro-devel}
-- git: {local-name: moveit_msgs, uri: 'https://github.com/ros-planning/moveit_msgs.git',
-    version: hydro-devel}
-- git: {local-name: moveit_plugins, uri: 'https://github.com/ros-planning/moveit_plugins.git',
-    version: hydro-devel}
-- git: {local-name: moveit_commander, uri: 'https://github.com/ros-planning/moveit_commander.git',
-    version: hydro-devel}
-- git: {local-name: moveit_resources, uri: 'https://github.com/ros-planning/moveit_resources.git',
-    version: master}
