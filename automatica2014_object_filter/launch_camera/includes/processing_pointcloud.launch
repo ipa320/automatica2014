@@ -14,7 +14,7 @@
   <arg name="depth"            default="depth" />
   
      <!-- Pointcloud processing -->
-  <include file="$(find openni2_launch)/launch/includes/pointclouds.launch" >
+  <include file="$(find automatica2014_object_filter)/launch_camera/includes/pointclouds.launch" >
     <arg name="manager" value="$(arg manager)" /> 
     <arg name="rgb" value="$(arg rgb)" />
     <arg name="ir" value="$(arg ir)" />

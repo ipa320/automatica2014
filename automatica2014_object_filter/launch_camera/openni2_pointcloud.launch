@@ -30,9 +30,9 @@
   <arg name="respawn" default="false" />
 
   <!-- Start nodelet manager in top-level namespace -->
-  <arg name="manager" value="$(arg camera)_nodelet_manager" />
+  <arg name="manager" value="$(arg camera)_nodelet_manager2" />
   <arg name="debug" default="false" /> <!-- Run manager in GDB? -->
-  <include file="$(find openni2_launch)/launch/includes/manager.launch">
+  <include file="$(find automatica2014_object_filter)/launch_camera/includes/manager.launch">
     <arg name="name" value="$(arg manager)" />
     <arg name="debug" value="$(arg debug)" />
   </include>
@@ -41,7 +41,7 @@
   <group ns="$(arg camera)">
 
     <!-- Load standard constellation of processing nodelets -->
-    <include file="$(find openni2_launch)/launch/includes/processing_pointcloud.launch">
+    <include file="$(find automatica2014_object_filter)/launch_camera/includes/processing_pointcloud.launch">
       <arg name="manager"               value="/$(arg manager)" /> <!-- Fully resolved -->
       <arg name="rgb"                   value="$(arg rgb)" />
       <arg name="ir"                    value="$(arg ir)" />
