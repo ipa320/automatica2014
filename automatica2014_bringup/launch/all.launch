@@ -35,16 +35,31 @@
 
                 <remap from="/robot_description" to="/sia10f/robot_description"/>
                 <remap from="/joint_states" to="/sia10f/joint_states"/>
+		<remap from="/tf" to="tf"/>
+
+                <remap from="/sia10f/env_points" to="/scenario/cam3d_env/depth_registered/points"/>
+                <remap from="/sia10f/mon_points" to="/scenario/cam3d_mon/depth_registered/points"/>
 
 		<machine name="pc2" address="$(arg pc2)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
+                <node name="relay_to_sia10f" pkg="topic_tools" type="relay" args="/tf /sia10f/tf" />
+
 		  <include ns="sia10f" file="$(find automatica2014_bringup)/launch/sia10f.launch">
-		  </include>
+		 </include>
+		
 	</group>
 
 	<group>
                 <remap from="/ur5/arm_controller/robot_description" to="/ur5/robot_description"/>
-                <remap from="/ur5/arm_controller/joint_states" to="/ur5/joint_states"/>
+
+                <remap from="/ur5/env_points" to="/scenario/cam3d_env/depth_registered/points"/>
+                <remap from="/ur5/mon_points" to="/scenario/cam3d_mon/depth_registered/points"/>
+                <remap from="/tf" to="tf"/>
+
+
 		<machine name="pc3" address="$(arg pc3)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
+
+                 <node name="relay_to_ur5" pkg="topic_tools" type="relay" args="/tf /ur5/tf" />
+
 		  <include ns="ur5" file="$(find automatica2014_bringup)/launch/ur5.launch">
 		  </include>
 	</group>
