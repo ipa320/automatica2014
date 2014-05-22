@@ -17,9 +17,11 @@
   </include>
 
   <!-- publish the robot state (tf transforms) -->
-  <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="publish_frequency" value="20.0"/>
+  </node>
 
-  <include file="$(find automatica2014_sia10f_moveit_config)/launch/move_group.launch" if="false">
+  <include file="$(find automatica2014_sia10f_moveit_config)/launch/move_group.launch">
     <arg name="publish_monitored_planning_scene" value="true" />
   </include>
 
