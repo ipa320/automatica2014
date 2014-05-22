@@ -7,9 +7,8 @@
 
 	<group>
 		<machine name="pc1" address="$(arg pc1)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
-		  <include ns="scenario" file="$(find automatica2014_bringup)/launch/scenario.launch">
+		  <include file="$(find automatica2014_bringup)/launch/scenario.launch">
 		  </include>
-
 	</group>
 
 	<group>
