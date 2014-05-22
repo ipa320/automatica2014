@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <remap from="/robot_description" to="robot_description"/>
+  <arg name="mux" default="false"/>
 
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/workspace.urdf.xacro'" />
   <!-- publish the robot state (tf transforms) -->
@@ -14,8 +15,7 @@
       <arg name="rgb_frame_id"          value="cam3d_env_link" />
       <arg name="depth_frame_id"        value="cam3d_env_link" />
 
-<!-- REMOVE THIS !!! -->
-<arg name="depth"            value="depth_in"  if="false"/>
+	<arg name="depth"            value="depth_in"  unless="$(arg mux)"/>
 
    </include>
   <include file="$(find automatica2014_object_filter)/launch_camera/openni2_pointcloud.launch" >
@@ -25,7 +25,7 @@
       <arg name="depth_frame_id"        value="cam3d_env_link" />
    </include>
 
-    <node name="env_mux" pkg="topic_tools" type="mux" args="cam3d_env/depth_in/image_raw /sia10f/move_group/env_depth_filtered /ur5/move_group/env_depth_filtered" />
+    <node name="env_mux" pkg="topic_tools" type="mux" args="/cam3d_env/depth_in/image_rect_raw /sia10f/move_group/env_depth_filtered /ur5/move_group/env_depth_filtered" if="$(arg mux)"/>
 
   <include file="$(find automatica2014_object_filter)/launch/bringup_perception.launch" />
 
