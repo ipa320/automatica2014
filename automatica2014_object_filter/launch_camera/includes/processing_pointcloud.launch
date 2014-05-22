@@ -1,0 +1,24 @@
+<!-- Load full set of processing nodelets for an OpenNI device -->
+<launch>
+
+  <!-- Name of nodelet manager, must be fully resolved -->
+  <arg name="manager" />
+
+  <arg name="respawn" default="false" />
+  
+  <arg name="rectify" default="true" />
+  
+  <!-- Remapping arguments -->
+  <arg name="rgb"              default="rgb" />
+  <arg name="ir"               default="ir" />
+  <arg name="depth"            default="depth" />
+  
+     <!-- Pointcloud processing -->
+  <include file="$(find openni2_launch)/launch/includes/pointclouds.launch" >
+    <arg name="manager" value="$(arg manager)" /> 
+    <arg name="rgb" value="$(arg rgb)" />
+    <arg name="ir" value="$(arg ir)" />
+    <arg name="depth" value="$(arg depth)" />
+  </include>
+
+</launch>
