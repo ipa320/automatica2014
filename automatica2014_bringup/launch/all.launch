@@ -37,9 +37,8 @@
                 <remap from="/joint_states" to="/sia10f/joint_states"/>
 		<remap from="/tf" to="tf"/>
 
-                <remap from="/sia10f/env_points" to="/scenario/cam3d_env/depth_registered/points"/>
-                <remap from="/sia10f/mon_points" to="/scenario/cam3d_mon/depth_registered/points"/>
-
+                <remap from="/sia10f/env_depth" to="/cam3d_env/depth/image_raw"/>
+ 
 		<machine name="pc2" address="$(arg pc2)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
                 <node name="relay_to_sia10f" pkg="topic_tools" type="relay" args="/tf /sia10f/tf" />
 
@@ -51,8 +50,7 @@
 	<group>
                 <remap from="/ur5/arm_controller/robot_description" to="/ur5/robot_description"/>
 
-                <remap from="/ur5/env_points" to="/scenario/cam3d_env/depth_registered/points"/>
-                <remap from="/ur5/mon_points" to="/scenario/cam3d_mon/depth_registered/points"/>
+                <remap from="/ur5/env_depth" to="/cam3d_env/depth/image_raw"/>
                 <remap from="/tf" to="tf"/>
 
 

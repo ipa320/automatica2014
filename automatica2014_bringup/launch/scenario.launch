@@ -15,7 +15,7 @@
       <arg name="depth_frame_id"        value="cam3d_env_link" />
 
 <!-- REMOVE THIS !!! -->
-<arg name="depth"            value="depth_in" />
+<arg name="depth"            value="depth_in"  if="false"/>
 
    </include>
   <include file="$(find automatica2014_object_filter)/launch_camera/openni2_pointcloud.launch" >
@@ -25,9 +25,7 @@
       <arg name="depth_frame_id"        value="cam3d_env_link" />
    </include>
 
-    <node name="env_mux" pkg="topic_tools" type="mux" args="env_points /sia10f/move_group/env_points_filtered /ur5/move_group/env_points_filtered" />
-
-
+    <node name="env_mux" pkg="topic_tools" type="mux" args="cam3d_env/depth_in/image_raw /sia10f/move_group/env_depth_filtered /ur5/move_group/env_depth_filtered" />
 
   <include file="$(find automatica2014_object_filter)/launch/bringup_perception.launch" />
 
