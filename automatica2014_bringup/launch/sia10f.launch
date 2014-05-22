@@ -32,6 +32,8 @@
   <rosparam ns="gripper_controller" command="load" file="$(find automatica2014_bringup)/config/pg70.yaml" />
   <node ns="gripper_controller" name="joint_trajectory_controller" pkg="cob_trajectory_controller" type="cob_trajectory_controller" cwd="node" respawn="false" output="screen">
   </node>
+  <!-- fake publisher for right joint -->
+  <node name="pg70_fake_joint" pkg="automatica2014_pg70_fake_joint" type="fake_joint.py" />
 
   <!-- upload default parameters -->
   <rosparam command="load" ns="/script_server/sia10f/gripper" file="$(find automatica2014_bringup)/config/pg70_joint_configurations.yaml"/>
