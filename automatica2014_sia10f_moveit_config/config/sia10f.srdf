@@ -15,6 +15,7 @@
     <group name="gripper">
         <joint name="finger_left_joint" />
         <joint name="finger_right_joint" />
+        <joint name="gripper_grasp_joint" />
     </group>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="gripper" parent_link="sia10f_link_t" group="gripper" parent_group="arm" />
