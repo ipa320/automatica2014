@@ -14,7 +14,7 @@ group1:
     [front,move,front]]
 group2:
   group_name: gripper_left
-  component_name: gripper
+  component_name: sia10f/gripper
   buttons: [[stop,trigger,stop],
     [init,trigger,init],
     [recover,trigger,recover],

@@ -10,8 +10,12 @@
         <xacro:insert_block name="cam3d_env_origin" />
     </xacro:cob_kinect_v0>
 
-    <!-- monitor camera -->    
-    <xacro:cob_kinect_v0 name="cam3d_mon" ros_topic="cam3d_mon" parent="base_link">
-        <xacro:insert_block name="cam3d_mon_origin" />
-    </xacro:cob_kinect_v0>
+    <!-- camera calibration link -->    
+    <link name="cam3d_calibration_link"/>
+
+    <joint name="camera_calibration_joint" type="fixed" >
+        <parent link="base_link" />
+        <child link="cam3d_calibration_link" />
+        <xacro:insert_block name="cam3d_calibration_origin" />
+    </joint>
 </robot>

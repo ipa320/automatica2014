@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
+	<remap from="/gripper_controller" to="/sia10f/gripper_controller"/>
 
 	<!-- start dashboard -->
 	<!--node pkg="cob_dashboard" type="cob_dashboard" name="$(anon dashboard_node)" cwd="node" respawn="false" output="screen" /-->

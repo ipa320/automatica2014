@@ -4,7 +4,7 @@
         <origin xyz="1 1 2" rpy="3.14 0 0" />
     </xacro:property>
 
-    <xacro:property name="cam3d_mon_origin">
+    <xacro:property name="cam3d_calibration_origin">
         <origin xyz="0 0 0" rpy="0 0 0" />
     </xacro:property>
 
