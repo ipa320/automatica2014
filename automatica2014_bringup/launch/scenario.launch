@@ -4,17 +4,32 @@
 
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/workspace.urdf.xacro'" />
   <!-- publish the robot state (tf transforms) -->
-  <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="publish_frequency" value="1.0"/>
+  </node>
 
-  <include file="$(find cob_bringup)/drivers/openni2.launch" >
-     <arg name="name" value="cam3d_env"/>
-     <arg name="device_id" value="#1"/>
+  <include file="$(find automatica2014_object_filter)/launch_camera/openni2_depth_only.launch" >
+     <arg name="camera" value="cam3d_env"/>
+     <arg name="publish_tf" value="false" />
+      <arg name="rgb_frame_id"          value="cam3d_env_link" />
+      <arg name="depth_frame_id"        value="cam3d_env_link" />
+
+<!-- REMOVE THIS !!! -->
+<arg name="depth"            value="depth_in" />
+
+   </include>
+  <include file="$(find automatica2014_object_filter)/launch_camera/openni2_pointcloud.launch" >
+     <arg name="camera" value="cam3d_env"/>
+     <arg name="depth"            value="depth_in" />
+     <arg name="rgb_frame_id"          value="cam3d_env_link" />
+      <arg name="depth_frame_id"        value="cam3d_env_link" />
    </include>
 
-  <include file="$(find cob_bringup)/drivers/openni2.launch" >
-     <arg name="name" value="cam3d_mon"/>
-     <arg name="device_id" value="#2"/>
-   </include>
+    <node name="env_mux" pkg="topic_tools" type="mux" args="env_points /sia10f/move_group/env_points_filtered /ur5/move_group/env_points_filtered" />
+
+
+
+  <include file="$(find automatica2014_object_filter)/launch/bringup_perception.launch" />
 
 </launch>
 
