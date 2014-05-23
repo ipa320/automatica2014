@@ -2,7 +2,7 @@
 <launch>
 
 	<node pkg="cob_phidgets" type="push_buttons" name="push_buttons_node" ns="push_buttons" cwd="node" respawn="true" output="screen">
-		<rosparam file="$(arg automatica2014_bringup)/config/push_buttons.yaml" command="load" />
+		<rosparam file="$(find automatica2014_bringup)/config/push_buttons.yaml" command="load" />
 	</node>
 
 </launch>

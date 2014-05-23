@@ -1,7 +1,7 @@
 <launch>
   <node name="calibration" pkg="automatica2014_object_filter" type="calibration.py" output="screen">
-	<param name="frame_camera_mount" value="/cam3d_env_link" />
-	<param name="frame_marker_mount" value="/marker" />
+	<param name="frame_camera_mount" value="cam3d_env_link" />
+	<param name="frame_marker_mount" value="marker" />
   </node>
 </launch>
 

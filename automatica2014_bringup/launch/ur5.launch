@@ -4,15 +4,12 @@
   <arg name="robot_ip" default="10.0.1.3"/>
   <arg name="prefix" default="ur5_"/>
 
-  <remap from="/robot_description" to="robot_description"/>
-  <remap from="/joint_states" to="joint_states"/>
-
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find automatica2014_description)/urdf/ur5.urdf.xacro'" />
 
   <!-- universal robot arm -->
   <node ns="arm_controller" name="ur_driver" pkg="ur_driver" type="driver.py" args="$(arg robot_ip)" output="screen">
      <param name="prefix" value="$(arg prefix)"/>
-     <remap from="/arm_controller/robot_description" to="robot_description"/>
+     <remap from="/arm_controller/robot_description" to="/robot_description"/>
   </node>
 
   <node name="ur5_throttler" type="throttle" pkg="topic_tools" args="messages arm_controller/joint_states 25 joint_states" />
@@ -30,6 +27,12 @@
   <include file="$(find automatica2014_ur5_moveit_config)/launch/move_group.launch">
     <arg name="publish_monitored_planning_scene" value="true" />
   </include>
+
+
+  <node name="lacquey_gripper" pkg="automatica2014_lacquey_gripper" type="gripper_driver.py" output="screen"/>
+
+    <!-- fake publisher for right joint -->
+    <node name="pg70_fake_joint" pkg="automatica2014_pg70_fake_joint" type="fake_joint_lacquey.py" />
 
 </launch>
 
