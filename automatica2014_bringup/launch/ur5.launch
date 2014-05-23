@@ -32,7 +32,11 @@
   <node name="lacquey_gripper" pkg="automatica2014_lacquey_gripper" type="gripper_driver.py" output="screen"/>
 
     <!-- fake publisher for right joint -->
-    <node name="pg70_fake_joint" pkg="automatica2014_pg70_fake_joint" type="fake_joint_lacquey.py" />
+    <node name="pg70_fake_joint" pkg="automatica2014_lacquey_gripper" type="fake_joint_lacquey.py" />
+
+  <!-- upload default parameters -->
+  <rosparam command="load" ns="/script_server/ur5/gripper" file="$(find automatica2014_bringup)/config/gripper_joint_configurations.yaml"/>
+
 
 </launch>
 

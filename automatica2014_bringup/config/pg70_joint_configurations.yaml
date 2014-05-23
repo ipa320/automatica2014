@@ -1,3 +1,0 @@
-joint_names: ["gripper_joint"]
-open: [[0.032]]
-close: [[0.01]]
