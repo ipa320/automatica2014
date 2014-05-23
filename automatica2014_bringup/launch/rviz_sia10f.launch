@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+	  <remap from="/robot_description" to="robot_description"/>
+	  <remap from="/joint_states" to="joint_states"/>
+          <remap from="/sia10f/arm_controller/robot_description" to="/sia10f/robot_description"/>
+
+          <remap from="/tf" to="tf"/>
+
+	  <include ns="sia10f" file="$(find automatica2014_sia10f_moveit_config)/launch/moveit_rviz.launch">
+		<arg name="config" value="true"/>
+	  </include>
+</launch>
+

@@ -28,8 +28,8 @@ class calib:
         self.tf = TransformListener()
         self.detector_service = rospy.ServiceProxy("/fiducials/get_fiducials", DetectObjects)
 
-        self.frame_camera_mount = "/camera_rgb_optical_frame"#rospy.get_param('~frame_camera_mount')
-        self.frame_marker_mount = "/marker"#rospy.get_param('~frame_marker_mount')
+        self.frame_camera_mount = rospy.get_param('~frame_camera_mount')
+        self.frame_marker_mount = rospy.get_param('~frame_marker_mount')
         self.frame_marker = rospy.get_param('~frame_marker', "/marker")
 
     def compute(self):
@@ -41,7 +41,7 @@ class calib:
             euler = tf.transformations.euler_from_quaternion(quaternion)
             print '<origin xyz="'+str(position[0])+" "+str(position[1])+" "+str(position[2])+'" rpy="'+str(euler[0])+" "+str(euler[1])+" "+str(euler[2])+'" />'
         else:
-            print "tf does not exist!"
+            print "tf does not exist!", self.tf.frameExists(self.frame_camera_mount), self.tf.frameExists(self.frame_marker_mount)
 
 if __name__ == '__main__':
 	rospy.init_node('marker_transform')

@@ -1,0 +1,5 @@
+Calibration
+
+roslaunch automatica2014_bringup scenario.launch
+roslaunch cob_fiducials fiducials.launch
+roslaunch automatica2014_object_filter calibration.launch
