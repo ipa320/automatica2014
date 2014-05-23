@@ -18,6 +18,7 @@ class Visualization:
     def __init__(self):
         rospy.Subscriber(SHAPE_ARRAY_TOPIC_NAME, ShapeArray, self.marker_cb)
         self.pub = rospy.Publisher('automatica_marker', MarkerArray)
+        self.listener = tf.TransformListener()
 
     def marker_cb(self, msg):
         print "got new shape: ", len(msg.shapes)
@@ -26,25 +27,35 @@ class Visualization:
         
         id_count = 0
         for shape in msg.shapes:
-            marker_array.markers += self.complete_box_marker(shape.pose, id_count).markers
+            ps = PoseStamped()
+            ps.header.stamp = rospy.Time.now()
+            ps.header.frame_id = FRAMEID
+            ps.pose = shape.pose
+            ps_base_link = self.listener.transformPose("base_link", ps)
+            
+            # fix position and orientations (hardcoded)
+            ps_base_link.pose.position.z = 0.1
+            #TODO set roll and pitch to 0 (fixed), only allow variation in yaw
+            
+            marker_array.markers += self.complete_box_marker(ps_base_link, id_count).markers
             id_count += 1
 
         self.pub.publish(marker_array)
 
 
-    def complete_box_marker(self, pose, id):
-        marker_array = self.axes_marker_array(pose, id)
-        marker_array.markers.append(self.box_marker(pose, id))
+    def complete_box_marker(self, ps, id):
+        marker_array = self.axes_marker_array(ps, id)
+        marker_array.markers.append(self.box_marker(ps, id))
         return marker_array
         
-    def box_marker(self, pose, id):
+    def box_marker(self, ps, id):
         marker = Marker()
-        marker.header.stamp = rospy.Time.now()
-        marker.header.frame_id = FRAMEID
+        marker.header.stamp = ps.header.stamp
+        marker.header.frame_id = ps.header.frame_id
         marker.ns = "boxes"
         marker.id = id
         marker.type = 1
-        marker.pose = copy.deepcopy(pose)
+        marker.pose = copy.deepcopy(ps.pose)
         marker.scale.x = 0.05
         marker.scale.y = 0.1
         marker.scale.z = 0.05
@@ -55,15 +66,15 @@ class Visualization:
         marker.lifetime = rospy.Duration(LIFETIME) #sec 
         return marker
 
-    def axes_marker_array(self, pose, id):
+    def axes_marker_array(self, ps, id):       
         axes_marker_array = MarkerArray()
         x = Marker()
-        x.header.stamp = rospy.Time.now()
-        x.header.frame_id = FRAMEID
+        x.header.stamp = ps.header.stamp
+        x.header.frame_id = ps.header.frame_id
         x.ns = "axes"
         x.id = id+1000
         x.type = 0
-        x.pose = copy.deepcopy(pose)
+        x.pose = copy.deepcopy(ps.pose)
         x.pose.position.z += -0.025
         x.scale.x = 0.1
         x.scale.y = 0.01
@@ -75,12 +86,12 @@ class Visualization:
         x.lifetime = rospy.Duration(LIFETIME) #sec 
         
         y = Marker()
-        y.header.stamp = rospy.Time.now()
-        y.header.frame_id = FRAMEID
+        y.header.stamp = ps.header.stamp
+        y.header.frame_id = ps.header.frame_id
         y.ns = "axes"
         y.id = id + 1001
         y.type = 0
-        y.pose = copy.deepcopy(pose)
+        y.pose = copy.deepcopy(ps.pose)
         y.pose.position.z += -0.025
 #TODO rotate 90deg around z-axis
 #        euler_tuple = tf.transformations.euler_from_quaternion([y.pose.orientation.x, y.pose.orientation.y, y.pose.orientation.z, y.pose.orientation.w])
@@ -99,12 +110,12 @@ class Visualization:
         y.lifetime = rospy.Duration(LIFETIME) #sec 
         
         z = Marker()
-        z.header.stamp = rospy.Time.now()
-        z.header.frame_id = FRAMEID
+        z.header.stamp = ps.header.stamp
+        z.header.frame_id = ps.header.frame_id
         z.ns = "axes"
         z.id = id + 1002
         z.type = 0
-        z.pose = copy.deepcopy(pose)
+        z.pose = copy.deepcopy(ps.pose)
         z.pose.position.z += -0.025
 #TODO rotate 90deg around x-axis
         z.scale.x = 0.1
