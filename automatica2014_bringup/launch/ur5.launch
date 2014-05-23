@@ -31,5 +31,8 @@
     <arg name="publish_monitored_planning_scene" value="true" />
   </include>
 
+
+  <node name="lacquey_gripper" pkg="automatica2014_lacquey_gripper" type="gripper_driver.py">
+
 </launch>
 

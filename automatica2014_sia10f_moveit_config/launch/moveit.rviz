@@ -7,8 +7,7 @@ Panels:
         - /MotionPlanning1
         - /MotionPlanning1/Planning Request1
         - /MotionPlanning1/Planned Path1
-        - /PointCloud21
-        - /Marker1
+        - /RobotModel1
       Splitter Ratio: 0.74256
     Tree Height: 443
   - Class: rviz/Help
@@ -239,6 +238,91 @@ Visualization Manager:
         Show Robot Collision: false
         Show Robot Visual: true
       Value: true
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        finger_left_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        finger_right_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper_flange_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper_grasp_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        gripper_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sia10f_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sia10f_link_b:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sia10f_link_e:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sia10f_link_l:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sia10f_link_r:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sia10f_link_s:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sia10f_link_t:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sia10f_link_u:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -254,22 +338,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 10.7863
+      Distance: 3.87913
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.17216
-        Y: 1.42526
-        Z: 1.21047e-06
+        X: 1.99221
+        Y: 1.04263
+        Z: 1.44889e-06
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.0947963
+      Pitch: 0.604797
       Target Frame: base_link
       Value: XYOrbit (rviz)
-      Yaw: 0.00676463
+      Yaw: 6.27495
     Saved: ~
 Window Geometry:
   Displays:

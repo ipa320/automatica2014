@@ -33,8 +33,8 @@ class Visualization:
             ps.pose = shape.pose
             ps_base_link = self.listener.transformPose("base_link", ps)
             
-            # fix position and orientations (hardcoded)
-            ps_base_link.pose.position.z = 0.1
+            # HACK: fix position and orientations (hardcoded)
+            ps_base_link.pose.position.z = 0.05
             #TODO set roll and pitch to 0 (fixed), only allow variation in yaw
             
             marker_array.markers += self.complete_box_marker(ps_base_link, id_count).markers
@@ -56,9 +56,9 @@ class Visualization:
         marker.id = id
         marker.type = 1
         marker.pose = copy.deepcopy(ps.pose)
-        marker.scale.x = 0.05
-        marker.scale.y = 0.1
-        marker.scale.z = 0.05
+        marker.scale.x = 0.045
+        marker.scale.y = 0.10
+        marker.scale.z = 0.045
         marker.color.r = 0.5
         marker.color.g = 0.5
         marker.color.b = 0.5
@@ -75,7 +75,7 @@ class Visualization:
         x.id = id+1000
         x.type = 0
         x.pose = copy.deepcopy(ps.pose)
-        x.pose.position.z += -0.025
+        x.pose.position.z += 0.025
         x.scale.x = 0.1
         x.scale.y = 0.01
         x.scale.z = 0.01
@@ -92,7 +92,7 @@ class Visualization:
         y.id = id + 1001
         y.type = 0
         y.pose = copy.deepcopy(ps.pose)
-        y.pose.position.z += -0.025
+        y.pose.position.z += 0.025
 #TODO rotate 90deg around z-axis
 #        euler_tuple = tf.transformations.euler_from_quaternion([y.pose.orientation.x, y.pose.orientation.y, y.pose.orientation.z, y.pose.orientation.w])
 #        euler_list = [euler_tuple[0], euler_tuple[1], euler_tuple[2]]
@@ -116,7 +116,7 @@ class Visualization:
         z.id = id + 1002
         z.type = 0
         z.pose = copy.deepcopy(ps.pose)
-        z.pose.position.z += -0.025
+        z.pose.position.z += 0.025
 #TODO rotate 90deg around x-axis
         z.scale.x = 0.1
         z.scale.y = 0.01
