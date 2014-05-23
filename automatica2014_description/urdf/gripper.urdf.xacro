@@ -61,7 +61,7 @@
         <child link="finger_left_link" />
         <limit effort="100" lower="-0.01" upper="0.062" velocity="1.0"/>
         <calibration rising="0.0"/>
-        <origin xyz="0.0 0.0 0.096" rpy="-1.57 -1.57 3.14"/>
+        <origin xyz="0.0 -0.008 0.096" rpy="-1.57 -1.57 3.14"/>
         <axis xyz="0 0 1" />
     </joint>
     
@@ -70,7 +70,7 @@
             <child link="finger_right_link" />
             <limit effort="100" lower="-0.01" upper="0.062" velocity="1.0"/>
             <calibration rising="0.0"/>
-            <origin xyz="0.0 0.0 0.096" rpy="-1.57 -1.57 0"/>
+            <origin xyz="0.0 0.008 0.096" rpy="-1.57 -1.57 0"/>
             <axis xyz="0 0 1" />
     </joint>
 
