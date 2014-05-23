@@ -11,11 +11,11 @@
     </xacro:cob_kinect_v0>
 
     <!-- camera calibration link -->    
-    <link name="cam3d_calibration_link"/>
+    <link name="marker"/>
 
     <joint name="camera_calibration_joint" type="fixed" >
         <parent link="base_link" />
-        <child link="cam3d_calibration_link" />
+        <child link="marker" />
         <xacro:insert_block name="cam3d_calibration_origin" />
     </joint>
 </robot>
