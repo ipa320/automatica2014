@@ -13,7 +13,7 @@
                 <mesh filename="package://automatica2014_description/meshes/finger_left.stl"/>
             </geometry>
             <material name="silver">
-                            <color rgba="1 1 1 1"/>
+                <color rgba="1 1 1 1"/>
             </material>
         </collision>
     </link>
@@ -24,7 +24,7 @@
             <mesh filename="package://automatica2014_description/meshes/finger_right.stl"/>
             </geometry>
             <material name="silver">
-                            <color rgba="1 1 1 1"/>
+                <color rgba="1 1 1 1"/>
             </material>
         </visual>
         <collision>
@@ -32,7 +32,7 @@
                 <mesh filename="package://automatica2014_description/meshes/finger_right.stl"/>
             </geometry>
             <material name="silver">
-                            <color rgba="1 1 1 1"/>
+                <color rgba="1 1 1 1"/>
             </material>
         </collision>
     </link>
@@ -43,7 +43,7 @@
             <mesh filename="package://automatica2014_description/meshes/gripper.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="blue">
-                            <color rgba="0 0 1 1"/>
+                <color rgba="0 0 1 1"/>
             </material>
         </visual>
         <collision>
@@ -51,7 +51,7 @@
                 <mesh filename="package://automatica2014_description/meshes/gripper.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="blue">
-                            <color rgba="0 0 1 1"/>
+                <color rgba="0 0 1 1"/>
             </material>
         </collision>
     </link>
