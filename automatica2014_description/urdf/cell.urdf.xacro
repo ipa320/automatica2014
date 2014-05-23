@@ -1,25 +1,25 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <xacro:property name="cam3d_env_origin">
-        <origin xyz="0.6 1.1 1.65" rpy="3.14 0 3.14" />
+    <xacro:property name="cam3d_calibration_origin">
+        <origin xyz="0.65 0.791 0" rpy="0 0 0" />
     </xacro:property>
 
-    <xacro:property name="cam3d_calibration_origin">
-        <origin xyz="0 0 0" rpy="0 0 0" />
+    <xacro:property name="cam3d_env_origin"> <!-- fill in calibration values here -->
+        <origin xyz="-0.00525894500153 0.263612777206 1.7" rpy="-3.1415926 0 -3.1415926" />
     </xacro:property>
 
     <xacro:property name="ur5_origin">
-        <origin xyz="0.5 1.5 0" rpy="0 0 0" />
+        <origin xyz="0.45 1.585 0.01" rpy="0 0 -0.7854" />
     </xacro:property>
 
     <xacro:property name="sia10f_origin">
-        <origin xyz="0.5 0.5 0" rpy="0 0 0" />
+        <origin xyz="0.45 0.35 0.015" rpy="0 0 0" />
     </xacro:property>
 
     <link name="base_link">
         <visual>
             <geometry>
-            <mesh filename="package://automatica2014_description/meshes/cell.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="package://automatica2014_description/meshes/cell.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <collision>

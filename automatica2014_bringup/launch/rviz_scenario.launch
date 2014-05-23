@@ -1,5 +1,15 @@
 <?xml version="1.0"?>
 <launch>
-	  <node pkg="rviz" type="rviz" name="$(anon rviz)" args="-d $(find automatica2014_bringup)/config/scenario.rviz" respawn="false" output="screen" />
+    
+    <node pkg="topic_tools" type="relay" name="sia10f_tf_relay" args="/sia10f/tf /scenario/tf"/>
+    <node pkg="topic_tools" type="relay" name="ur5_tf_relay" args="/ur5/tf /scenario/tf"/>
+
+    <node pkg="rviz" type="rviz" name="$(anon rviz)" args="-d $(find automatica2014_bringup)/config/scenario.rviz" respawn="false" output="screen" >
+        <remap from="/robot_description" to="robot_description"/>
+        <remap from="/joint_states" to="joint_states"/>
+        <remap from="/sia10f/arm_controller/robot_description" to="/sia10f/robot_description"/>
+        <remap from="/ur5/arm_controller/robot_description" to="/ur5/robot_description"/>
+        <remap from="/tf" to="/scenario/tf"/>
+    </node>
 </launch>
 

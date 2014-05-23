@@ -9,7 +9,7 @@ from sensor_msgs.msg import *
 
 class FakeJoint:
     def __init__(self):
-        rospy.Subscriber("/lacquey_controller/state", JointTrajectoryControllerState, self.js_callback)
+        rospy.Subscriber("gripper_controller/state", JointTrajectoryControllerState, self.js_callback)
         self.pub = rospy.Publisher('joint_states', JointState)
 
     def js_callback(self, data):

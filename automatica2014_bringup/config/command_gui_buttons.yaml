@@ -13,10 +13,15 @@ group1:
     [home,move,home],
     [front,move,front]]
 group2:
-  group_name: gripper_left
+  group_name: gripper_pg70
   component_name: sia10f/gripper
   buttons: [[stop,trigger,stop],
     [init,trigger,init],
     [recover,trigger,recover],
     [open,move,open],
+    [close,move,close]]
+group3:
+  group_name: gripper_lacquey
+  component_name: ur5/gripper
+  buttons: [[open,move,open],
     [close,move,close]]

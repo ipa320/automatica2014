@@ -9,9 +9,10 @@ from ur_msgs.srv import *
 from control_msgs.msg import *
 from sensor_msgs.msg import *
 
-FJT_ACTION_NAME="lacquey_controller/follow_joint_trajectory"
+FJT_ACTION_NAME="gripper_controller/follow_joint_trajectory"
 SETIO_SERVICE_NAME="arm_controller/set_io_state"
-
+POSITION_OPEN = 0.032
+POSITION_CLOSE = 0.01
 
 # open: pin 8 state 1, pin 9 state 0
 # close: pin 8 state 0, pin 9 state 1
@@ -23,11 +24,11 @@ class GripperAction:
         self._as.start()
         self._set_io = rospy.ServiceProxy(SETIO_SERVICE_NAME, SetIOState)
         self._pub_joint_states = rospy.Publisher('joint_states', JointState)
-        self._pub_controller_state = rospy.Publisher('/lacquey_controller/state', JointTrajectoryControllerState)
+        self._pub_controller_state = rospy.Publisher('gripper_controller/state', JointTrajectoryControllerState)
         # joint state
         self._joint_states = JointState()
         self._joint_states.name = ["finger_left_joint"]
-        self._joint_states.position = [0.0]
+        self._joint_states.position = [POSITION_OPEN]
         self._joint_states.velocity = [0.0]
         self._joint_states.effort = [0.0]
         # contoller state
@@ -82,15 +83,15 @@ class GripperAction:
         print "action called"
         
         position = goal.trajectory.points[0].positions[0]
-        if position <= 0.5: # close
+        if position <= 0.02: # close
             print "closing gripper"
-            self._joint_states.position = [0.0] #TODO
-            self._controller_state.actual.positions = [0.0] #TODO
+            self._joint_states.position = [POSITION_CLOSE]
+            self._controller_state.actual.positions = [POSITION_CLOSE] #TODO
             success = self.move_gripper("close")
         else: # open
             print "open gripper"
-            self._joint_states.position = [1.0] #TODO
-            self._controller_state.actual.positions = [1.0] #TODO
+            self._joint_states.position = [POSITION_OPEN] #TODO
+            self._controller_state.actual.positions = [POSITION_OPEN] #TODO
             success = self.move_gripper("open")
         
         if success:
