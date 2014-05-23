@@ -6,16 +6,16 @@
     <xacro:include filename="$(find automatica2014_description)/urdf/cell.urdf.xacro" />
 
     <!-- environment camera -->    
-    <xacro:cob_kinect_v0 name="cam3d_env" ros_topic="cam3d_env" parent="base_link">
+    <xacro:cob_kinect_v0 name="cam3d_env" ros_topic="cam3d_env" parent="cam3d_calibration_link">
         <xacro:insert_block name="cam3d_env_origin" />
     </xacro:cob_kinect_v0>
 
     <!-- camera calibration link -->    
-    <link name="marker"/>
+    <link name="cam3d_calibration_link"/>
 
-    <joint name="camera_calibration_joint" type="fixed" >
+    <joint name="cam3d_calibration_joint" type="fixed" >
         <parent link="base_link" />
-        <child link="marker" />
+        <child link="cam3d_calibration_link" />
         <xacro:insert_block name="cam3d_calibration_origin" />
     </joint>
 </robot>

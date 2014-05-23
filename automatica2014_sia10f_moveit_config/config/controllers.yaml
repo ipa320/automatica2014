@@ -4,7 +4,7 @@ controller_list:
     type: FollowJointTrajectory
     joints: [sia10f_joint_s, sia10f_joint_l, sia10f_joint_e, sia10f_joint_u, sia10f_joint_r, sia10f_joint_b, sia10f_joint_t]
   - name: gripper_controller
-    action_ns: follow_joint_trajectory_action
+    action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     joints:
       - finger_left_joint
