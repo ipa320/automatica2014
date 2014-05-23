@@ -7,29 +7,27 @@ import rospy
 import copy
 from visualization_msgs.msg import *
 from geometry_msgs.msg import *
+from cob_3d_mapping_msgs.msg import *
 import tf
 
-SHAPE_ARRAY_TOPIC_NAME="/shape_out"
+SHAPE_ARRAY_TOPIC_NAME="/shapes_array_obj_out"
+LIFETIME=0.1
+FRAMEID="cam3d_env_link"
 
 class Visualization:
     def __init__(self):
-        rospy.Subscriber(SHAPE_ARRAY_TOPIC_NAME, MarkerArray, self.marker_cb)
+        rospy.Subscriber(SHAPE_ARRAY_TOPIC_NAME, ShapeArray, self.marker_cb)
         self.pub = rospy.Publisher('automatica_marker', MarkerArray)
 
     def marker_cb(self, msg):
-        print "got new shape"
+        print "got new shape: ", len(msg.shapes)
+        
         marker_array = MarkerArray()
         
-        pose = Pose()
-        pose.position.x = 0.5
-        pose.position.y = 0.5
-        pose.position.z = 0.5
-
-#        marker_array.markers = self.axes_marker_array(pose).markers
-        marker_array.markers += self.complete_box_marker(pose, 1).markers
-        pose2 = copy.deepcopy(pose)
-        pose2.position.x += 0.2
-        marker_array.markers += self.complete_box_marker(pose2, 2).markers
+        id_count = 0
+        for shape in msg.shapes:
+            marker_array.markers += self.complete_box_marker(shape.pose, id_count).markers
+            id_count += 1
 
         self.pub.publish(marker_array)
 
@@ -42,7 +40,7 @@ class Visualization:
     def box_marker(self, pose, id):
         marker = Marker()
         marker.header.stamp = rospy.Time.now()
-        marker.header.frame_id = "/base_link"
+        marker.header.frame_id = FRAMEID
         marker.ns = "boxes"
         marker.id = id
         marker.type = 1
@@ -50,23 +48,23 @@ class Visualization:
         marker.scale.x = 0.05
         marker.scale.y = 0.1
         marker.scale.z = 0.05
-        marker.color.r = 1.0
-        marker.color.g = 0.0
-        marker.color.b = 0.0
+        marker.color.r = 0.5
+        marker.color.g = 0.5
+        marker.color.b = 0.5
         marker.color.a = 1.0
-        marker.lifetime = rospy.Duration(1.0) #sec 
+        marker.lifetime = rospy.Duration(LIFETIME) #sec 
         return marker
 
     def axes_marker_array(self, pose, id):
         axes_marker_array = MarkerArray()
         x = Marker()
         x.header.stamp = rospy.Time.now()
-        x.header.frame_id = "/base_link"
+        x.header.frame_id = FRAMEID
         x.ns = "axes"
         x.id = id+1000
         x.type = 0
         x.pose = copy.deepcopy(pose)
-        x.pose.position.z += 0.025
+        x.pose.position.z += -0.025
         x.scale.x = 0.1
         x.scale.y = 0.01
         x.scale.z = 0.01
@@ -74,16 +72,16 @@ class Visualization:
         x.color.g = 0.0
         x.color.b = 0.0
         x.color.a = 1.0
-        x.lifetime = rospy.Duration(1.0) #sec 
+        x.lifetime = rospy.Duration(LIFETIME) #sec 
         
         y = Marker()
         y.header.stamp = rospy.Time.now()
-        y.header.frame_id = "/base_link"
+        y.header.frame_id = FRAMEID
         y.ns = "axes"
         y.id = id + 1001
         y.type = 0
         y.pose = copy.deepcopy(pose)
-        y.pose.position.z += 0.025
+        y.pose.position.z += -0.025
 #TODO rotate 90deg around z-axis
 #        euler_tuple = tf.transformations.euler_from_quaternion([y.pose.orientation.x, y.pose.orientation.y, y.pose.orientation.z, y.pose.orientation.w])
 #        euler_list = [euler_tuple[0], euler_tuple[1], euler_tuple[2]]
@@ -98,16 +96,16 @@ class Visualization:
         y.color.g = 1.0
         y.color.b = 0.0
         y.color.a = 1.0
-        y.lifetime = rospy.Duration(1.0) #sec 
+        y.lifetime = rospy.Duration(LIFETIME) #sec 
         
         z = Marker()
         z.header.stamp = rospy.Time.now()
-        z.header.frame_id = "/base_link"
+        z.header.frame_id = FRAMEID
         z.ns = "axes"
         z.id = id + 1002
         z.type = 0
         z.pose = copy.deepcopy(pose)
-        z.pose.position.z += 0.025
+        z.pose.position.z += -0.025
 #TODO rotate 90deg around x-axis
         z.scale.x = 0.1
         z.scale.y = 0.01
@@ -116,11 +114,11 @@ class Visualization:
         z.color.g = 0.0
         z.color.b = 1.0
         z.color.a = 1.0
-        z.lifetime = rospy.Duration(1.0) #sec 
+        z.lifetime = rospy.Duration(LIFETIME) #sec 
         
         axes_marker_array.markers.append(x)
-        axes_marker_array.markers.append(y)
-        axes_marker_array.markers.append(z)
+#        axes_marker_array.markers.append(y)
+#        axes_marker_array.markers.append(z)
         return axes_marker_array
 
 
