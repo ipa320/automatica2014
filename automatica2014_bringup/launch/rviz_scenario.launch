@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-	  <node pkg="rviz" type="rviz" name="$(anon rviz)" args="-d $(find automatica_bringup)/config/scenario.rviz" respawn="false" output="screen" />
+	  <node pkg="rviz" type="rviz" name="$(anon rviz)" args="-d $(find automatica2014_bringup)/config/scenario.rviz" respawn="false" output="screen" />
 </launch>
 

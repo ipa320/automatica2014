@@ -7,3 +7,5 @@
 - git: {local-name: universal_robot, uri: 'https://github.com/ipa-mdl/universal_robot.git', version: digital_io}
 - git: {local-name: ipa_canopen, uri: 'https://github.com/ipa320/ipa_canopen.git',
     version: hydro_dev}
+- git: {local-name: cob_driver, uri: 'https://github.com/thiagodefreitas/cob_driver.git',
+    version: automatica2014_hack}
