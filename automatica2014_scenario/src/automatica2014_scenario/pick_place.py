@@ -13,27 +13,27 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 from actionlib_msgs.msg import GoalStatus 
 def make_plane(name, pose, normal = (0, 0, 1), offset = 0):
-        co = CollisionObject()
-        co.operation = CollisionObject.ADD
-        co.id = name
-        co.header = pose.header
-        p = Plane()
-        p.coef = list(normal)
-        p.coef.append(offset)
-        co.planes = [p]
-        co.plane_poses = [pose.pose]
-        return co
+    co = CollisionObject()
+    co.operation = CollisionObject.ADD
+    co.id = name
+    co.header = pose.header
+    p = Plane()
+    p.coef = list(normal)
+    p.coef.append(offset)
+    co.planes = [p]
+    co.plane_poses = [pose.pose]
+    return co
 
 def make_joint_trajectory(names, points):
-        jt = JointTrajectory()
-        jt.joint_names = names
-        pt = JointTrajectoryPoint()
-        pt.positions = points
-        pt.effort = [0]*len(points)
-        pt.velocities = [0]*len(points)
-        pt.accelerations = [0]*len(points)
-        jt.points = [pt]
-        return jt
+    jt = JointTrajectory()
+    jt.joint_names = names
+    pt = JointTrajectoryPoint()
+    pt.positions = points
+    pt.effort = [0]*len(points)
+    pt.velocities = [0]*len(points)
+    pt.accelerations = [0]*len(points)
+    jt.points = [pt]
+    return jt
     
 def make_top_grasp(pose):
     # a list of possible grasps to be used. At least one grasp must be filled in
@@ -83,16 +83,16 @@ def make_pickup_goal(poses):
     return goal
 
 def make_box(name, pose, size = (0, 0, 1)):
-        co = CollisionObject()
-        co.operation = CollisionObject.ADD
-        co.id = name
-        co.header = pose.header
-        box = SolidPrimitive()
-        box.type = SolidPrimitive.BOX
-        box.dimensions = list(size)
-        co.primitives = [box]
-        co.primitive_poses = [pose.pose]
-        return co
+    co = CollisionObject()
+    co.operation = CollisionObject.ADD
+    co.id = name
+    co.header = pose.header
+    box = SolidPrimitive()
+    box.type = SolidPrimitive.BOX
+    box.dimensions = list(size)
+    co.primitives = [box]
+    co.primitive_poses = [pose.pose]
+    return co
         
 class MoveitInterface:
     TABLE_HEIGHT = 0.10
