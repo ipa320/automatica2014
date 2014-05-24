@@ -95,7 +95,7 @@ def make_box(name, pose, size = (0, 0, 1)):
     return co
         
 class MoveitInterface:
-    TABLE_HEIGHT = 0.10
+    TABLE_HEIGHT = 0.01
     OBJECT_HEIGHT = 0.04
     OBJECT_LENGTH = 0.1
     def __init__(self, ns):
