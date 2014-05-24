@@ -6,10 +6,11 @@ import sys
 import rospy
 import actionlib
 from ur_msgs.srv import *
-from cob_msgs.srv import *
+from cob_srvs.srv import *
 
 LED_ACTION_NAME = "led_control/set_mode"
-SETIO_SERVICE_NAME="arm_controller/set_io_state"
+#HACK To have access to the ur5 service
+SETIO_SERVICE_NAME="/ur5/arm_controller/set_io_state"
 mode_on = 1
 mode_off = 0
 
@@ -19,9 +20,8 @@ mode_off = 0
 
 class LedAction:
     def __init__(self):
-        self._as = actionlib.SimpleActionServer(LED_ACTION_NAME, setString, self.execute_cb, False)
-        self._as.start()
-        self._set_io = rospy.ServiceProxy(SETIO_SERVICE_NAME, SetIOState)   
+        self._as = rospy.Service(LED_ACTION_NAME, SetString, self.execute_cb)
+        self._set_io = rospy.ServiceProxy(SETIO_SERVICE_NAME, SetIOState)
         
         # activate_Led (on)
         self.set_led("on")
@@ -58,19 +58,14 @@ class LedAction:
         print "action called"
         
         mode = goal.data
-        if mode == mode_off: # off
+        print mode
+        if mode == "off": # off
             print "turning off led"
            
             success = self.set_led("off")
         else: # on
             print "turning the led on"
             success = self.set_led("on")
-        
-        if success:
-            self._as.set_succeeded()
-        else:
-            self._as.set_aborted()
-        print "action finished"
         
    # def publish_joint_states(self):
    #     self._joint_states.header.stamp = rospy.Time.now()
@@ -87,7 +82,34 @@ if __name__ == '__main__':
     server = LedAction()
     print "Led control started"
     r = rospy.Rate(10) # 10hz
+    rospy.wait_for_service('push_buttons_node/button_state', 2.0)
+    
+    prev_led_mode = "Button OFF"
     while not rospy.is_shutdown():
+        try:
+            get_button_state = rospy.ServiceProxy('push_buttons_node/button_state', SetString)
+            resp1 = get_button_state("sia10f")
+            led_mode = resp1.errorMessage.data
+            #if(led_mode != prev_led_mode):
+            #    if(led_mode == "Button OFF"):
+            #        server.set_led("off")
+            #    elif(led_mode=="Button ON"):
+            #        server.set_led("on")
+            
+            if(led_mode == "Button OFF"):
+                server.set_led("off")
+            elif(led_mode=="Button ON"):
+                server.set_led("on")
+                rospy.sleep(2)
+                server.set_led("off")                    
+            prev_led_mode = led_mode
+            
+
+            
+            
+            
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
     #    server.publish_joint_states()
     #    server.publish_controller_state()
         r.sleep()

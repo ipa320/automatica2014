@@ -4,6 +4,9 @@
 	<node pkg="cob_phidgets" type="push_buttons" name="push_buttons_node" ns="push_buttons" cwd="node" respawn="true" output="screen">
 		<rosparam file="$(find automatica2014_bringup)/config/push_buttons.yaml" command="load" />
 	</node>
+	
+	<node name="led_control" pkg="automatica2014_led" ns="push_buttons" type="led_control.py" output="screen"/>
+
 
 </launch>
 
