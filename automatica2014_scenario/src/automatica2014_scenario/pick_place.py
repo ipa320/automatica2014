@@ -158,6 +158,6 @@ class MoveitInterface:
             return res.error_code.val
 if __name__ == "__main__":
     rospy.init_node("test")
-    test = MoveitInterface("/sia10f")
-    test.pick(0.7,0.7,0)
+    test = MoveitInterface("")
+    test.pick(0.5,1.0,0)
     rospy.spin()
