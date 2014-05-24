@@ -108,11 +108,11 @@ class MoveitInterface:
         p = PoseStamped()
         p.header.stamp = rospy.Time.now()
         p.header.frame_id = "base_link"
-        p.pose.position.x = 0
-        p.pose.position.y = 0
-        p.pose.position.z = self.TABLE_HEIGHT 
+        p.pose.position.x = 0.6
+        p.pose.position.y = 1.00
+        p.pose.position.z = self.TABLE_HEIGHT-0.005 
         p.pose.orientation.w = 1.0
-        self.pub_co.publish(make_plane("table",p))
+        self.pub_co.publish(make_box("table",p,(1.2,0.7,0.01)))
         
     def is_grasped(self):
         res = self.srv_ps(GetPlanningSceneRequest(PlanningSceneComponents(4)))
