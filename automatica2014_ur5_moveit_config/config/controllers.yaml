@@ -9,3 +9,9 @@ controller_list:
       - ur5_wrist_1_joint
       - ur5_wrist_2_joint
       - ur5_wrist_3_joint
+  - name: lacquey_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    joints:
+      - finger_left_joint
+      - finger_right_joint
