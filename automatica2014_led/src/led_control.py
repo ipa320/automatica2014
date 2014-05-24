@@ -9,7 +9,8 @@ from ur_msgs.srv import *
 from cob_srvs.srv import *
 
 LED_ACTION_NAME = "led_control/set_mode"
-SETIO_SERVICE_NAME="arm_controller/set_io_state"
+#HACK To have access to the ur5 service
+SETIO_SERVICE_NAME="/ur5/arm_controller/set_io_state"
 mode_on = 1
 mode_off = 0
 
@@ -89,13 +90,23 @@ if __name__ == '__main__':
             get_button_state = rospy.ServiceProxy('push_buttons_node/button_state', SetString)
             resp1 = get_button_state("sia10f")
             led_mode = resp1.errorMessage.data
-            if(led_mode != prev_led_mode):
-                if(led_mode == "Button OFF"):
-                    server.set_led("off")
-                elif(led_mode=="Button ON"):
-                    server.set_led("on")
-                    
+            #if(led_mode != prev_led_mode):
+            #    if(led_mode == "Button OFF"):
+            #        server.set_led("off")
+            #    elif(led_mode=="Button ON"):
+            #        server.set_led("on")
+            
+            if(led_mode == "Button OFF"):
+                server.set_led("off")
+            elif(led_mode=="Button ON"):
+                server.set_led("on")
+                rospy.sleep(2)
+                server.set_led("off")                    
             prev_led_mode = led_mode
+            
+
+            
+            
             
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e

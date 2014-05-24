@@ -92,7 +92,7 @@
     <joint name="gripper_grasp_joint" type="fixed" >
         <parent link="gripper_link" />
         <child link="gripper_grasp_link" />
-        <origin xyz="0.0 0.0 -0.12" rpy="0 0 1.57"/>
+        <origin xyz="0.0 0.0 -0.18" rpy="0 0 1.57"/>
     </joint>
     
     <link name="gripper_grasp_link"/>

@@ -4,64 +4,65 @@
 	<arg name="pc1" default="scenario"/>
 	<arg name="pc2" default="robot-sia10f"/>
 	<arg name="pc3" default="robot-ur"/>
-	<arg name="mux" default="true"/>
+	<arg name="mux" default="false"/>
 
 	<group>
-		<machine name="pc1" address="$(arg pc1)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
-		  <include file="$(find automatica2014_bringup)/launch/scenario.launch">
-			<arg name="mux" value="$(arg mux)"/>
-		  </include>
+        <machine name="pc1" address="$(arg pc1)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
+        
+        <include file="$(find automatica2014_bringup)/launch/scenario.launch">
+            <arg name="mux" value="$(arg mux)"/>
+        </include>
 	</group>
 
 	<group>
-		<remap from="/gripper_controller" to="sia10f/gripper_controller"/>
-		<remap from="/gripper_controller/init" to="/sia10f/gripper_controller/init"/>
-		<remap from="/gripper_controller/halt" to="/sia10f/gripper_controller/halt"/>
-		<remap from="/gripper_controller/recover" to="/sia10f/gripper_controller/recover"/>
-		<remap from="/gripper_controller/stop" to="/sia10f/gripper_controller/stop"/>
-		<remap from="/gripper_controller/set_operation_mode" to="/sia10f/gripper_controller/set_operation_mode"/>
-		<remap from="/gripper_controller/current_operationmode" to="/sia10f/gripper_controller/current_operationmode"/>
-		<remap from="/gripper_controller/state" to="/sia10f/gripper_controller/state"/>
-		<remap from="/gripper_controller/command_vel" to="/sia10f/gripper_controller/command_vel"/>
-		<remap from="/gripper_controller/goal" to="/sia10f/gripper_controller/follow_joint_trajectory/goal"/>
-		<remap from="/gripper_controller/status" to="/sia10f/gripper_controller/follow_joint_trajectory/status"/>
-		<remap from="/gripper_controller/feedback" to="/sia10f/gripper_controller/follow_joint_trajectory/feedback"/>
-		<remap from="/gripper_controller/result" to="/sia10f/gripper_controller/follow_joint_trajectory/result"/>
-		<remap from="/gripper_controller/goal" to="/sia10f/gripper_controller/follow_joint_trajectory/cancel"/>
-		<remap from="/sia10f/gripper_controller/robot_description" to="/sia10f/robot_description"/>
-		<remap from="/gripper_controller/joint_names" to="/sia10f/gripper_controller/joint_names"/>
-		<remap from="/gripper_controller/module_ids" to="/sia10f/gripper_controller/module_ids"/>
+    	<machine name="pc2" address="$(arg pc2)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
+	
+        <remap from="/gripper_controller" to="sia10f/gripper_controller"/>
+        <remap from="/gripper_controller/init" to="/sia10f/gripper_controller/init"/>
+        <remap from="/gripper_controller/halt" to="/sia10f/gripper_controller/halt"/>
+        <remap from="/gripper_controller/recover" to="/sia10f/gripper_controller/recover"/>
+        <remap from="/gripper_controller/stop" to="/sia10f/gripper_controller/stop"/>
+        <remap from="/gripper_controller/set_operation_mode" to="/sia10f/gripper_controller/set_operation_mode"/>
+        <remap from="/gripper_controller/current_operationmode" to="/sia10f/gripper_controller/current_operationmode"/>
+        <remap from="/gripper_controller/state" to="/sia10f/gripper_controller/state"/>
+        <remap from="/gripper_controller/command_vel" to="/sia10f/gripper_controller/command_vel"/>
+        <remap from="/gripper_controller/goal" to="/sia10f/gripper_controller/follow_joint_trajectory/goal"/>
+        <remap from="/gripper_controller/status" to="/sia10f/gripper_controller/follow_joint_trajectory/status"/>
+        <remap from="/gripper_controller/feedback" to="/sia10f/gripper_controller/follow_joint_trajectory/feedback"/>
+        <remap from="/gripper_controller/result" to="/sia10f/gripper_controller/follow_joint_trajectory/result"/>
+        <remap from="/gripper_controller/goal" to="/sia10f/gripper_controller/follow_joint_trajectory/cancel"/>
+        <remap from="/sia10f/gripper_controller/robot_description" to="/sia10f/robot_description"/>
+        <remap from="/gripper_controller/joint_names" to="/sia10f/gripper_controller/joint_names"/>
+        <remap from="/gripper_controller/module_ids" to="/sia10f/gripper_controller/module_ids"/>
 
-                <remap from="/sia10f/arm_controller/robot_description" to="/sia10f/robot_description"/>
-                <remap from="/sia10f/arm_controller/joint_states" to="/sia10f/joint_states"/>
+        <remap from="/sia10f/arm_controller/robot_description" to="/sia10f/robot_description"/>
+        <remap from="/sia10f/arm_controller/joint_states" to="/sia10f/joint_states"/>
 
-                <remap from="/robot_description" to="/sia10f/robot_description"/>
-                <remap from="/joint_states" to="/sia10f/joint_states"/>
-		<remap from="/tf" to="tf"/>
+        <remap from="/robot_description" to="/sia10f/robot_description"/>
+        <remap from="/joint_states" to="/sia10f/joint_states"/>
+        <remap from="/tf" to="tf"/>
 
-                <remap from="/sia10f/move_group/env_depth" to="/cam3d_env/depth/image_rect_raw"/>
+        <remap from="/sia10f/move_group/env_depth" to="/cam3d_env/depth/image_rect_raw" if="$(arg mux)"/>
+        <remap from="/sia10f/move_group/env_depth" to="/cam3d_env/depth_in/image_rect_raw" unless="$(arg mux)"/>
  
-		<machine name="pc2" address="$(arg pc2)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
-                <node name="relay_to_sia10f" pkg="topic_tools" type="relay" args="/tf /sia10f/tf" />
-
-		  <include ns="sia10f" file="$(find automatica2014_bringup)/launch/sia10f.launch">
-		 </include>
 		
+        <node name="relay_to_sia10f" pkg="topic_tools" type="relay" args="/tf /sia10f/tf" />
+
+        <include ns="sia10f" file="$(find automatica2014_bringup)/launch/sia10f.launch"/>
 	</group>
 
 	<group>
-                <remap from="/ur5/arm_controller/robot_description" to="/ur5/robot_description"/>
-
-                <remap from="/ur5/move_group/env_depth" to="/cam3d_env/depth/image_rect_raw"/>
-                <remap from="/tf" to="tf"/>
-
-
 		<machine name="pc3" address="$(arg pc3)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
 
-                 <node name="relay_to_ur5" pkg="topic_tools" type="relay" args="/tf /ur5/tf" />
+        <remap from="/ur5/arm_controller/robot_description" to="/ur5/robot_description"/>
 
-		  <include ns="ur5" file="$(find automatica2014_bringup)/launch/ur5.launch">
-		  </include>
+        <remap from="/ur5/move_group/env_depth" to="/cam3d_env/depth/image_rect_raw" if="$(arg mux)"/>
+        <remap from="/ur5/move_group/env_depth" to="/cam3d_env/depth_in/image_rect_raw" unless="$(arg mux)"/>
+        <remap from="/tf" to="tf"/>
+
+        <node name="relay_to_ur5" pkg="topic_tools" type="relay" args="/tf /ur5/tf" />
+
+        <include ns="ur5" file="$(find automatica2014_bringup)/launch/ur5.launch"/>
 	</group>
 
 </launch>

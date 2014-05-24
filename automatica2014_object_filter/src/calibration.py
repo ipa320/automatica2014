@@ -82,7 +82,7 @@ class calib:
 
         
         # HACK set some DOf to fixed values
-        z_avg_value = 1.68
+        z_avg_value = 1.65
         roll_avg_value = -3.1415926
         pitch_avg_value = 0
         yaw_avg_value = -3.1415926

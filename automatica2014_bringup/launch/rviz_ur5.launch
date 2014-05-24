@@ -3,6 +3,7 @@
 	  <remap from="/robot_description" to="robot_description"/>
 	  <remap from="/joint_states" to="joint_states"/>
           <remap from="/ur5/arm_controller/robot_description" to="/ur5/robot_description"/>
+          <remap from="/get_planning_scene" to="get_planning_scene"/>
 
           <remap from="/tf" to="tf"/>
 
