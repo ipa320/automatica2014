@@ -321,7 +321,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: base_footprint
     Frame Rate: 30
   Name: root
   Tools:
@@ -333,22 +333,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 1.77155
+      Distance: 3.03281
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.521215
-        Y: 1.3922
-        Z: 4.47041e-08
+        X: 5.08717
+        Y: 1.50452
+        Z: -7.89761e-07
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.784797
+      Pitch: 0.0547975
       Target Frame: base_link
       Value: XYOrbit (rviz)
-      Yaw: 0.44678
+      Yaw: 6.27997
     Saved: ~
 Window Geometry:
   Displays:
