@@ -53,13 +53,13 @@ def make_top_grasp(pose):
     grasp.pre_grasp_approach.direction.header.stamp = rospy.Time.now()
     grasp.pre_grasp_approach.direction.header.frame_id = "base_link"
     grasp.pre_grasp_approach.direction.vector.z = -1.0
-    grasp.pre_grasp_approach.desired_distance = 0.15
+    grasp.pre_grasp_approach.desired_distance = 0.25
     grasp.pre_grasp_approach.desired_distance = 0.10
     
     grasp.post_grasp_retreat.direction.header.stamp = rospy.Time.now()
     grasp.post_grasp_retreat.direction.header.frame_id = "base_link"
     grasp.post_grasp_retreat.direction.vector.z = 1.0
-    grasp.post_grasp_retreat.desired_distance = 0.15
+    grasp.post_grasp_retreat.desired_distance = 0.25
     grasp.post_grasp_retreat.desired_distance = 0.10
     
     grasp.post_place_retreat = deepcopy(grasp.pre_grasp_approach)
