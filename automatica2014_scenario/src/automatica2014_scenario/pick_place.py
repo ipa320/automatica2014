@@ -95,7 +95,7 @@ def make_box(name, pose, size = (0, 0, 1)):
         return co
         
 class MoveitInterface:
-    TABLE_HEIGHT = 0.01
+    TABLE_HEIGHT = 0.10
     OBJECT_HEIGHT = 0.04
     OBJECT_LENGTH = 0.1
     def __init__(self, ns):
@@ -158,6 +158,6 @@ class MoveitInterface:
             return res.error_code.val
 if __name__ == "__main__":
     rospy.init_node("test")
-    test = MoveitInterface("")
-    test.pick(0.8,0.8,0)
+    test = MoveitInterface("/sia10f")
+    test.pick(0.7,0.7,0)
     rospy.spin()

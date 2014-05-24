@@ -29,7 +29,7 @@
 
                 <!-- gripper -->
                 <joint name="flange_joint" type="fixed" >
-                    <parent link="sia10f_link_t" />
+                    <parent link="sia10f_link_7_t" />
                     <child link="gripper_flange_link" />
                     <xacro:insert_block name="flange_origin" />
                 </joint>
