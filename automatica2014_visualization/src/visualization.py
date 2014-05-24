@@ -11,7 +11,7 @@ from cob_3d_mapping_msgs.msg import *
 import tf
 
 SHAPE_ARRAY_TOPIC_NAME="/shapes_array_obj_out"
-LIFETIME=0.1
+LIFETIME=1.0
 FRAMEID="cam3d_env_link"
 
 class Visualization:
@@ -21,7 +21,6 @@ class Visualization:
         self.listener = tf.TransformListener()
 
     def marker_cb(self, msg):
-        print "got new shape: ", len(msg.shapes)
         
         marker_array = MarkerArray()
         
@@ -34,7 +33,21 @@ class Visualization:
             ps_base_link = self.listener.transformPose("base_link", ps)
             
             # HACK: fix position and orientations (hardcoded)
-            ps_base_link.pose.position.z = 0.05
+            ps_base_link.pose.position.z = 0.10
+
+            euler_tuple = tf.transformations.euler_from_quaternion([ps_base_link.pose.orientation.x, ps_base_link.pose.orientation.y, ps_base_link.pose.orientation.z, ps_base_link.pose.orientation.w])
+            euler_list = [euler_tuple[0], euler_tuple[1], euler_tuple[2]]
+            euler_list[0] = 0
+            euler_list[1] = 0
+            quat_x, quat_y, quat_z, quat_w = tf.transformations.quaternion_from_euler(euler_list[0], euler_list[1], euler_list[2])
+            ps_base_link.pose.orientation.x = quat_x
+            ps_base_link.pose.orientation.y = quat_y
+            ps_base_link.pose.orientation.z = quat_z
+            ps_base_link.pose.orientation.w = quat_w
+            # end HACK
+            
+            
+            
             #TODO set roll and pitch to 0 (fixed), only allow variation in yaw
             
             marker_array.markers += self.complete_box_marker(ps_base_link, id_count).markers
@@ -53,7 +66,7 @@ class Visualization:
         marker.header.stamp = ps.header.stamp
         marker.header.frame_id = ps.header.frame_id
         marker.ns = "boxes"
-        marker.id = id
+        marker.id = id*1000
         marker.type = 1
         marker.pose = copy.deepcopy(ps.pose)
         marker.scale.x = 0.045
@@ -72,7 +85,7 @@ class Visualization:
         x.header.stamp = ps.header.stamp
         x.header.frame_id = ps.header.frame_id
         x.ns = "axes"
-        x.id = id+1000
+        x.id = id*1000+1
         x.type = 0
         x.pose = copy.deepcopy(ps.pose)
         x.pose.position.z += 0.025
@@ -83,23 +96,25 @@ class Visualization:
         x.color.g = 0.0
         x.color.b = 0.0
         x.color.a = 1.0
-        x.lifetime = rospy.Duration(LIFETIME) #sec 
+        x.lifetime = rospy.Duration(LIFETIME) #sec
         
         y = Marker()
         y.header.stamp = ps.header.stamp
         y.header.frame_id = ps.header.frame_id
         y.ns = "axes"
-        y.id = id + 1001
+        y.id = id*1000+2
         y.type = 0
         y.pose = copy.deepcopy(ps.pose)
         y.pose.position.z += 0.025
-#TODO rotate 90deg around z-axis
-#        euler_tuple = tf.transformations.euler_from_quaternion([y.pose.orientation.x, y.pose.orientation.y, y.pose.orientation.z, y.pose.orientation.w])
-#        euler_list = [euler_tuple[0], euler_tuple[1], euler_tuple[2]]
-#        print euler_list
-#        euler_list[1] += 1.5708
-#        print tf.transformations.quaternion_from_euler(euler_list[0], euler_list[1], euler_list[2])
-#        y.pose.orientation = tf.transformations.quaternion_from_euler(euler_list[0], euler_list[1], euler_list[2])
+        # rotate 90deg around z-axis
+        euler_tuple = tf.transformations.euler_from_quaternion([y.pose.orientation.x, y.pose.orientation.y, y.pose.orientation.z, y.pose.orientation.w])
+        euler_list = [euler_tuple[0], euler_tuple[1], euler_tuple[2]]
+        euler_list[2] += 1.5708
+        quat_x, quat_y, quat_z, quat_w = tf.transformations.quaternion_from_euler(euler_list[0], euler_list[1], euler_list[2])
+        y.pose.orientation.x = quat_x
+        y.pose.orientation.y = quat_y
+        y.pose.orientation.z = quat_z
+        y.pose.orientation.w = quat_w
         y.scale.x = 0.1
         y.scale.y = 0.01
         y.scale.z = 0.01
@@ -113,11 +128,19 @@ class Visualization:
         z.header.stamp = ps.header.stamp
         z.header.frame_id = ps.header.frame_id
         z.ns = "axes"
-        z.id = id + 1002
+        z.id = id*1000+3
         z.type = 0
         z.pose = copy.deepcopy(ps.pose)
         z.pose.position.z += 0.025
-#TODO rotate 90deg around x-axis
+        # rotate -90deg around y-axis
+        euler_tuple = tf.transformations.euler_from_quaternion([z.pose.orientation.x, z.pose.orientation.y, z.pose.orientation.z, z.pose.orientation.w])
+        euler_list = [euler_tuple[0], euler_tuple[1], euler_tuple[2]]
+        euler_list[1] += -1.5708
+        quat_x, quat_y, quat_z, quat_w = tf.transformations.quaternion_from_euler(euler_list[0], euler_list[1], euler_list[2])
+        z.pose.orientation.x = quat_x
+        z.pose.orientation.y = quat_y
+        z.pose.orientation.z = quat_z
+        z.pose.orientation.w = quat_w
         z.scale.x = 0.1
         z.scale.y = 0.01
         z.scale.z = 0.01
@@ -126,10 +149,16 @@ class Visualization:
         z.color.b = 1.0
         z.color.a = 1.0
         z.lifetime = rospy.Duration(LIFETIME) #sec 
+
+        
+        
+        
+        
+        
         
         axes_marker_array.markers.append(x)
-#        axes_marker_array.markers.append(y)
-#        axes_marker_array.markers.append(z)
+        axes_marker_array.markers.append(y)
+        axes_marker_array.markers.append(z)
         return axes_marker_array
 
 
