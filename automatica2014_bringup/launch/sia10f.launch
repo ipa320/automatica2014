@@ -38,7 +38,7 @@
   <node name="pg70_fake_joint" pkg="automatica2014_pg70_fake_joint" type="fake_joint.py" />
 
   <!-- upload default parameters -->
-  <rosparam command="load" ns="/script_server/sia10f/gripper" file="$(find automatica2014_bringup)/config/pg70_joint_configurations.yaml"/>
+  <rosparam command="load" ns="/script_server/sia10f/gripper" file="$(find automatica2014_bringup)/config/gripper_joint_configurations.yaml"/>
 
 
 </launch>

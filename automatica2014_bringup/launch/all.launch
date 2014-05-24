@@ -4,7 +4,7 @@
 	<arg name="pc1" default="scenario"/>
 	<arg name="pc2" default="robot-sia10f"/>
 	<arg name="pc3" default="robot-ur"/>
-	<arg name="mux" default="false"/>
+	<arg name="mux" default="true"/>
 
 	<group>
 		<machine name="pc1" address="$(arg pc1)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>

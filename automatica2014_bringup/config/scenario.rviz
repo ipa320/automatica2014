@@ -85,7 +85,7 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
@@ -96,12 +96,12 @@ Visualization Manager:
       Robot Description: /sia10f/robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
@@ -112,7 +112,7 @@ Visualization Manager:
       Robot Description: /ur5/robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
@@ -200,22 +200,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.47039
+      Distance: 2.07093
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.77876
-        Y: 1.08112
-        Z: 0.109445
+        X: 0.769384
+        Y: 1.08685
+        Z: 0.356851
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.485395
+      Pitch: 0.420395
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.26858
+      Yaw: 6.08858
     Saved: ~
 Window Geometry:
   Displays:
@@ -233,5 +233,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1855
-  X: 65
+  X: 58
   Y: 24
