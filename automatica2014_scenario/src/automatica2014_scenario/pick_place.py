@@ -83,6 +83,31 @@ def make_pickup_goal(poses):
     goal.attached_object_touch_links = ['gripper_link','finger_left_link','finger_right_link']
     return goal
 
+def make_place_goal(poses):
+    goal = PlaceGoal()
+    goal.group_name = "gripper"
+    goal.attached_object_name = "object"
+    
+    approach = GripperTranslation()
+    approach.direction.header.stamp = rospy.Time.now()
+    approach.direction.header.frame_id = "base_link"
+    approach.direction.vector.z = -1.0
+    approach.desired_distance = 0.10
+    approach.min_distance = 0.05
+
+    retreat = GripperTranslation()
+    retreat.direction.header.stamp = rospy.Time.now()
+    retreat.direction.header.frame_id = "base_link"
+    retreat.direction.vector.z = 1.0
+    retreat.desired_distance = 0.10
+    retreat.min_distance = 0.05
+
+    goal.place_locations = [ PlaceLocation(place_pose=p,pre_place_approach=approach, post_place_retreat=retreat)  for p in poses ]
+    
+    goal.support_surface_name = "table"
+    goal.allowed_planning_time = 5.0
+    return goal
+    
 def add_box(co, pose, size = (0, 0, 1), offset=(0,0,0)):
     box = SolidPrimitive()
     box.type = SolidPrimitive.BOX
@@ -150,6 +175,7 @@ class MoveitInterface:
         self.pub_co = rospy.Publisher(ns+'/collision_object', CollisionObject)
         self.srv_ps  = rospy.ServiceProxy(ns + '/get_planning_scene', GetPlanningScene)  
         self.action_pickup = actionlib.SimpleActionClient(ns+'/pickup', PickupAction)
+        self.action_place = actionlib.SimpleActionClient(ns+'/place', PlaceAction)
         rospy.sleep(2.0)
         
         self.init_table()
@@ -167,19 +193,26 @@ class MoveitInterface:
             else:
                 break
         return res == MoveItErrorCodes.SUCCESS
-                     
+        
+    def make_object_pose(self, x, y, alpha, header = None):
+        p = PoseStamped()
+        if not header:
+            p.header.frame_id = "base_link"
+            p.header.stamp = rospy.Time.now()
+        else:
+            p.header = header
+        p.pose.position.x = x
+        p.pose.position.y = y
+        p.pose.position.z = self.TABLE_HEIGHT + self.OBJECT_HEIGHT/2.0
+        p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
+        return p
+        
     def pick(self, x,y, alpha):
         if self.is_grasped():
            print "already grasped"
            return MoveItErrorCodes.SUCCESS
         else:
-            p = PoseStamped()
-            p.header.frame_id = "base_link"
-            p.header.stamp = rospy.Time.now()
-            p.pose.position.x = x
-            p.pose.position.y = y
-            p.pose.position.z = self.TABLE_HEIGHT + self.OBJECT_HEIGHT/2.0
-            p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
+            p = self.make_object_pose(x,y,alpha)
             self.pub_co.publish(make_box("object", p, (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
             
             p2 = deepcopy(p)
@@ -195,8 +228,25 @@ class MoveitInterface:
                 return MoveItErrorCodes.FAILURE
             res = self.action_pickup.get_result()
             return res.error_code.val
-
-
+    def place(self, x,y, alpha):
+        if not self.is_grasped():
+           print "not grasped"
+           return MoveItErrorCodes.SUCCESS
+        else:
+            p = self.make_object_pose(x,y,alpha)
+            p2 = deepcopy(p)
+            p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
+            
+            goal = make_place_goal([p,p2])
+            
+            ok = self.action_place.send_goal_and_wait(goal)
+            
+            if ok == GoalStatus.PREEMPTED:
+                return MoveItErrorCodes.PREEMPTED
+            if ok != GoalStatus.SUCCEEDED:
+                return MoveItErrorCodes.FAILURE
+            res = self.action_place.get_result()
+            return res.error_code.val
 _current_poses = None
 def poses_cb(msg):
         global _current_poses
