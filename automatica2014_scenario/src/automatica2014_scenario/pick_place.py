@@ -166,19 +166,27 @@ class MoveitInterface:
             else:
                 break
         return res == MoveItErrorCodes.SUCCESS
+        
+    def make_object_pose(self, x, y, alpha, header = None):
+        p = PoseStamped()
+        if not header:
+            p.header.frame_id = "base_link"
+            p.header.stamp = rospy.Time.now()
+        else:
+            p.header = header
+        p.pose.position.x = x
+        p.pose.position.y = y
+        p.pose.position.z = self.TABLE_HEIGHT + self.OBJECT_HEIGHT/2.0
+        p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
+        return p
+        
                      
     def pick(self, x,y, alpha):
         if self.is_grasped():
            print "already grasped"
            return MoveItErrorCodes.SUCCESS
         else:
-            p = PoseStamped()
-            p.header.frame_id = "base_link"
-            p.header.stamp = rospy.Time.now()
-            p.pose.position.x = x
-            p.pose.position.y = y
-            p.pose.position.z = self.TABLE_HEIGHT + self.OBJECT_HEIGHT/2.0
-            p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
+            p = self.make_object_pose(x,y,alpha)
             self.pub_co.publish(make_box("object", p, (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
             
             p2 = deepcopy(p)
