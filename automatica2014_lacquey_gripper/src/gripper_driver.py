@@ -82,7 +82,7 @@ class GripperAction:
     def execute_cb(self, goal):
         print "action called"
         
-        position = goal.trajectory.points[0].positions[0]
+        position = goal.trajectory.points[-1].positions[0]
         if position <= 0.02: # close
             print "closing gripper"
             self._joint_states.position = [POSITION_CLOSE]
