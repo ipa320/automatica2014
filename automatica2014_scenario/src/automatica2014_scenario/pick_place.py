@@ -83,16 +83,24 @@ def make_pickup_goal(poses):
     goal.attached_object_touch_links = ['gripper_link','finger_left_link','finger_right_link']
     return goal
 
-def make_box(name, pose, size = (0, 0, 1)):
+def add_box(co, pose, size = (0, 0, 1), offset=(0,0,0)):
+    box = SolidPrimitive()
+    box.type = SolidPrimitive.BOX
+    box.dimensions = list(size)
+    co.primitives.append(box)
+    p = deepcopy(pose)
+    p.position.x += offset[0]
+    p.position.y += offset[1]
+    p.position.z += offset[2]
+    co.primitive_poses.append(p)
+    return co
+
+def make_box(name, pose, size = (0, 0, 1), offset=(0,0,0)):
     co = CollisionObject()
     co.operation = CollisionObject.ADD
     co.id = name
     co.header = pose.header
-    box = SolidPrimitive()
-    box.type = SolidPrimitive.BOX
-    box.dimensions = list(size)
-    co.primitives = [box]
-    co.primitive_poses = [pose.pose]
+    add_box(co, pose.pose, size,offset)
     return co
         
 class MoveitInterface:
