@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
     <xacro:property name="base_origin">
@@ -9,17 +10,18 @@
     </xacro:property>
 
     <xacro:property name="cam3d_env_origin"> <!-- fill in calibration values here -->
-        <origin xyz="-0.00525894500153 0.263612777206 1.65" rpy="-3.1415926 0 -3.1415926" />
+        <!--origin xyz="-0.00525894500153 0.263612777206 1.65" rpy="-3.1415926 0 -3.1415926" /-->
+        <origin xyz="-0.00549884192955 0.273024997864 1.80" rpy="-3.1415926 0 -3.1415926" />
     </xacro:property>
 
     <xacro:property name="ur5_origin">
-        <!--origin xyz="0.45 1.585 0.01" rpy="0 0 -0.7854" /--> <!-- measured -->
-        <origin xyz="0.45 1.55 0.01" rpy="0 0 -2.35619449019" /> <!-- manually calibrated -->
+        <origin xyz="0.45 1.585 0.01" rpy="0 0 -2.35619449019" /> <!-- measured -->
+        <!--origin xyz="0.45 1.55 0.01" rpy="0 0 -2.35619449019" /--> <!-- manually calibrated -->
     </xacro:property>
 
     <xacro:property name="sia10f_origin">
-        <!--origin xyz="0.45 0.35 0.015" rpy="0 0 0" /--> <!-- measured -->
-        <origin xyz="0.45 0.37 0.015" rpy="0 0 0" /> <!-- manually calibrated -->
+        <origin xyz="0.45 0.35 0.015" rpy="0 0 0" /> <!-- measured -->
+        <!--origin xyz="0.45 0.37 0.015" rpy="0 0 0" /--> <!-- manually calibrated -->
     </xacro:property>
 
     <link name="base_footprint"/>
