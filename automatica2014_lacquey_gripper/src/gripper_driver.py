@@ -39,7 +39,7 @@ class GripperAction:
         self._controller_state.actual.velocities = self._joint_states.velocity        
         
         # activate_gripper (open)
-        self.move_gripper("open")
+        # self.move_gripper("open")
 
     # "open" or "close"
     # else error
