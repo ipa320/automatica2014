@@ -39,7 +39,6 @@ def make_top_grasp(pose):
     # a list of possible grasps to be used. At least one grasp must be filled in
     #manipulation_msgs/Grasp[] possible_grasps
     grasp = Grasp()
-    print grasp
     grasp.id = "top"
 
     # open
@@ -132,21 +131,18 @@ class MoveitInterface:
         table = make_box("table",p1,(x,y,floor),(0,0,-floor/2.0))
         add_box(table,p2.pose,(x,y,floor),(0,0,floor/2.0))
         self.pub_co.publish(table)
-        print table
         
         wall1 = make_box("wall1",p1,(border,y,wall),(-(x/2.0-border/2.0),0,wall/2.0)) # back
         add_box(wall1,p1.pose, (border,y,wall),(+(x/2.0-border/2.0),0,wall/2.0)) # front
         add_box(wall1,p1.pose, (x,border,wall),(0,+(y/2.0-border/2.0),wall/2.0)) # right
         add_box(wall1,p1.pose, (x,border,wall),(0,-(y/2.0-border/2.0),wall/2.0)) # left
         self.pub_co.publish(wall1)
-        print wall1
 
         wall2 = make_box("wall2",p2,(border,y,wall),(-(x/2.0-border/2.0),0,wall/2.0)) # back
         add_box(wall2,p2.pose, (border,y,wall),(+(x/2.0-border/2.0),0,wall/2.0)) # front
         add_box(wall2,p2.pose, (x,border,wall),(0,+(y/2.0-border/2.0),wall/2.0)) # right
         add_box(wall2,p2.pose, (x,border,wall),(0,-(y/2.0-border/2.0),wall/2.0)) # left
         self.pub_co.publish(wall2)
-        print wall2
             
     def __init__(self, ns):
         self.ns = ns
@@ -173,10 +169,9 @@ class MoveitInterface:
                      
     def pick(self, x,y, alpha):
         if self.is_grasped():
-           print "grasped"
+           print "already grasped"
            return MoveItErrorCodes.SUCCESS
         else:
-            print "not grasped"
             p = PoseStamped()
             p.header.frame_id = "base_link"
             p.header.stamp = rospy.Time.now()
