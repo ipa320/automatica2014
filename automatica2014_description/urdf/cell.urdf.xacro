@@ -14,7 +14,7 @@
 
     <xacro:property name="ur5_origin">
         <!--origin xyz="0.45 1.585 0.01" rpy="0 0 -0.7854" /--> <!-- measured -->
-        <origin xyz="0.45 1.55 0.01" rpy="0 0 -0.7854" /> <!-- manually calibrated -->
+        <origin xyz="0.45 1.55 0.01" rpy="0 0 -2.35619449019" /> <!-- manually calibrated -->
     </xacro:property>
 
     <xacro:property name="sia10f_origin">

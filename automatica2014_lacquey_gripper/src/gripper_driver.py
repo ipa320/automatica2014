@@ -11,7 +11,7 @@ from sensor_msgs.msg import *
 
 FJT_ACTION_NAME="gripper_controller/follow_joint_trajectory"
 SETIO_SERVICE_NAME="arm_controller/set_io_state"
-POSITION_OPEN = 0.032
+POSITION_OPEN = 1.0
 POSITION_CLOSE = 0.01
 
 # open: pin 8 state 1, pin 9 state 0
@@ -39,7 +39,7 @@ class GripperAction:
         self._controller_state.actual.velocities = self._joint_states.velocity        
         
         # activate_gripper (open)
-        self.move_gripper("open")
+        # self.move_gripper("open")
 
     # "open" or "close"
     # else error
@@ -48,7 +48,7 @@ class GripperAction:
         req8.state.pin = 8
         req9 = SetIOStateRequest()
         req9.state.pin = 9
-        if position == "open": #close
+        if position == "open": #open
             req8.state.state = 1
             req9.state.state = 0
         elif position == "close":
@@ -76,13 +76,13 @@ class GripperAction:
         except rospy.ServiceException:
             print "Service call failed, aborting action"
             return False
-        
+        rospy.sleep(0.5)
         return True
 
     def execute_cb(self, goal):
         print "action called"
         
-        position = goal.trajectory.points[0].positions[0]
+        position = goal.trajectory.points[-1].positions[0]
         if position <= 0.02: # close
             print "closing gripper"
             self._joint_states.position = [POSITION_CLOSE]
