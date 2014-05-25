@@ -160,7 +160,7 @@ class MoveitInterface:
         
     def pick_one_of(self, poses):
         for pose in poses:
-            r,p,y = tf.transformations.euler_from_quaternion(pose.orientation)
+            r,p,y = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
             res = self.pick(pose.position.x,pose.position.y,y)
             if res in [MoveItErrorCodes.PLANNING_FAILED, MoveItErrorCodes.NO_IK_SOLUTION]:
                 continue
