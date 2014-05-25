@@ -103,10 +103,51 @@ def make_box(name, pose, size = (0, 0, 1), offset=(0,0,0)):
     add_box(co, pose.pose, size,offset)
     return co
         
+        
 class MoveitInterface:
     TABLE_HEIGHT = 0.01
     OBJECT_HEIGHT = 0.04
     OBJECT_LENGTH = 0.1
+    TABLE1 = (0.37, 1.045, 0)
+    TABLE2 = (0.945, 1.045, 0)
+    TABLE_SIZE = (0.4,0.6,0.02,0.01, 0.07) # x y border, floor, wall
+    
+    def init_table(self):
+        x, y, border, floor, wall = self.TABLE_SIZE
+        
+        p1 = PoseStamped()
+        p1.header.frame_id = "base_link"
+        p1.header.stamp = rospy.Time.now()
+        p1.pose.position.x, p1.pose.position.y, alpha1 = self.TABLE1
+        p1.pose.position.z = self.TABLE_HEIGHT
+        p1.pose.orientation.x,p1.pose.orientation.y,p1.pose.orientation.z,p1.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha1)
+
+        p2 = PoseStamped()
+        p2.header.frame_id = "base_link"
+        p2.header.stamp = rospy.Time.now()
+        p2.pose.position.x, p2.pose.position.y, alpha2 = self.TABLE2
+        p2.pose.position.z = self.TABLE_HEIGHT
+        p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha2)
+        
+        table = make_box("table",p1,(x,y,floor),(0,0,-floor/2.0))
+        add_box(table,p2.pose,(x,y,floor),(0,0,floor/2.0))
+        self.pub_co.publish(table)
+        print table
+        
+        wall1 = make_box("wall1",p1,(border,y,wall),(-(x/2.0-border/2.0),0,wall/2.0)) # back
+        add_box(wall1,p1.pose, (border,y,wall),(+(x/2.0-border/2.0),0,wall/2.0)) # front
+        add_box(wall1,p1.pose, (x,border,wall),(0,+(y/2.0-border/2.0),wall/2.0)) # right
+        add_box(wall1,p1.pose, (x,border,wall),(0,-(y/2.0-border/2.0),wall/2.0)) # left
+        self.pub_co.publish(wall1)
+        print wall1
+
+        wall2 = make_box("wall2",p2,(border,y,wall),(-(x/2.0-border/2.0),0,wall/2.0)) # back
+        add_box(wall2,p2.pose, (border,y,wall),(+(x/2.0-border/2.0),0,wall/2.0)) # front
+        add_box(wall2,p2.pose, (x,border,wall),(0,+(y/2.0-border/2.0),wall/2.0)) # right
+        add_box(wall2,p2.pose, (x,border,wall),(0,-(y/2.0-border/2.0),wall/2.0)) # left
+        self.pub_co.publish(wall2)
+        print wall2
+            
     def __init__(self, ns):
         self.ns = ns
         self.pub_co = rospy.Publisher(ns+'/collision_object', CollisionObject)
@@ -114,14 +155,7 @@ class MoveitInterface:
         self.action_pickup = actionlib.SimpleActionClient(ns+'/pickup', PickupAction)
         rospy.sleep(2.0)
         
-        p = PoseStamped()
-        p.header.stamp = rospy.Time.now()
-        p.header.frame_id = "base_link"
-        p.pose.position.x = 0.6
-        p.pose.position.y = 1.00
-        p.pose.position.z = self.TABLE_HEIGHT-0.005 
-        p.pose.orientation.w = 1.0
-        self.pub_co.publish(make_box("table",p,(1.2,0.7,0.01)))
+        self.init_table()
         
     def is_grasped(self):
         res = self.srv_ps(GetPlanningSceneRequest(PlanningSceneComponents(4)))
