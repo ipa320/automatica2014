@@ -55,11 +55,11 @@ class Visualization:
             #TODO set roll and pitch to 0 (fixed), only allow variation in yaw
             
             marker_array.markers += self.complete_box_marker(ps_base_link, id_count).markers
-            pose_array.poses += ps_base_link.pose
+            pose_array.poses.append(ps_base_link.pose)
             id_count += 1
 
         self.pub_marker.publish(marker_array)
-        self.pose_marker.publish(pose_array)
+        self.pub_poses.publish(pose_array)
 
 
     def complete_box_marker(self, ps, id):

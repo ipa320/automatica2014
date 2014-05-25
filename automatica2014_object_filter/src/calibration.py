@@ -69,7 +69,7 @@ class calib:
                 continue
             count_success += 1
         
-        if len(x_values) <= 5:
+        if len(x_values) < 5:
             print "to few detections, aborting"
             return
                 
@@ -80,9 +80,10 @@ class calib:
         pitch_avg_value = (float)(sum(pitch_values))/len(pitch_values)
         yaw_avg_value = (float)(sum(yaw_values))/len(yaw_values)
 
+        print "The average values (without hardcoding) <xyz> are : \n\n" + '<origin xyz="' + str(x_avg_value) +" "+ str(-y_avg_value) +" "+  str(z_avg_value) + '" rpy="' + str(roll_avg_value) + " " + str(pitch_avg_value) + " " + str(yaw_avg_value) + '" />\n'
         
         # HACK set some DOf to fixed values
-        z_avg_value = 1.65
+        z_avg_value = 1.80
         roll_avg_value = -3.1415926
         pitch_avg_value = 0
         yaw_avg_value = -3.1415926
