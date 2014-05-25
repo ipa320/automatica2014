@@ -42,7 +42,7 @@ def make_top_grasp(pose):
     grasp.id = "top"
 
     # open
-    grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[1,1])
+    grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[1.0,1.0])
 
     # close
     grasp.grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[0.01,0.01])
