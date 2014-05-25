@@ -11,7 +11,7 @@ from sensor_msgs.msg import *
 
 FJT_ACTION_NAME="gripper_controller/follow_joint_trajectory"
 SETIO_SERVICE_NAME="arm_controller/set_io_state"
-POSITION_OPEN = 0.032
+POSITION_OPEN = 1.0
 POSITION_CLOSE = 0.01
 
 # open: pin 8 state 1, pin 9 state 0
@@ -48,7 +48,7 @@ class GripperAction:
         req8.state.pin = 8
         req9 = SetIOStateRequest()
         req9.state.pin = 9
-        if position == "open": #close
+        if position == "open": #open
             req8.state.state = 1
             req9.state.state = 0
         elif position == "close":
