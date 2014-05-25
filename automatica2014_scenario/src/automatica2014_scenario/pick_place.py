@@ -6,7 +6,7 @@ import tf.transformations
 from moveit_msgs.msg import *
 from moveit_msgs.srv import GetPlanningScene,GetPlanningSceneRequest
 from shape_msgs.msg import SolidPrimitive, Plane
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, PoseArray
 from copy import deepcopy
 import math
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
@@ -195,8 +195,31 @@ class MoveitInterface:
                 return MoveItErrorCodes.FAILURE
             res = self.action_pickup.get_result()
             return res.error_code.val
+
+
+_current_poses = None
+def poses_cb(msg):
+        global _current_poses
+        _current_poses = msg.poses
+
 if __name__ == "__main__":
     rospy.init_node("test")
-    test = MoveitInterface("")
-    test.pick(0.5,1.0,0)
+    test = MoveitInterface("sia10f")
+    
+    rospy.Subscriber("/automatica_poses", PoseArray, poses_cb)
+    
+    while not rospy.is_shutdown():
+        if _current_poses:
+            print "pick"
+            print _current_poses
+            #yaw = tf.transformations.euler_from_quaternion([_current_pose.orientation.x, _current_pose.orientation.y, _current_pose.orientation.z, _current_pose.orientation.w])[2]
+            #print "yaw:", yaw
+            #print test.pick(_current_pose.position.x,_current_pose.position.y,yaw)
+            print test.pick_one_of(deepcopy(_current_poses))
+            _current_poses = None
+        
+        #print "pick", test.pick(0.35,1.0,0)
+        rospy.sleep(0.5)
+        #print "pick", test.pick(0.94,1.045,0)
+        #rospy.sleep(0.5)
     rospy.spin()
