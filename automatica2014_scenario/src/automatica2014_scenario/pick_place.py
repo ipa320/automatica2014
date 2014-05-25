@@ -78,7 +78,8 @@ def make_pickup_goal(poses):
     goal.support_surface_name = "table"
     goal.allow_gripper_support_collision = False
     # The maximum amount of time the motion planner is allowed to plan for
-    goal.allowed_planning_time = 1.0
+    goal.allowed_planning_time = 5.0
+    
     goal.attached_object_touch_links = ['gripper_link','finger_left_link','finger_right_link']
     return goal
 
