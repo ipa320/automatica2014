@@ -106,7 +106,7 @@ def make_box(name, pose, size = (0, 0, 1), offset=(0,0,0)):
         
 class MoveitInterface:
     TABLE_HEIGHT = 0.01
-    OBJECT_HEIGHT = 0.04
+    OBJECT_HEIGHT = 0.045
     OBJECT_LENGTH = 0.1
     TABLE1 = (0.37, 1.045, 0)
     TABLE2 = (0.945, 1.045, 0)
