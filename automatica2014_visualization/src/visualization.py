@@ -17,17 +17,21 @@ FRAMEID="cam3d_env_link"
 class Visualization:
     def __init__(self):
         rospy.Subscriber(SHAPE_ARRAY_TOPIC_NAME, ShapeArray, self.marker_cb)
-        self.pub = rospy.Publisher('automatica_marker', MarkerArray)
+        self.pub_marker = rospy.Publisher('automatica_marker', MarkerArray)
+        self.pub_poses = rospy.Publisher('automatica_poses', PoseArray)
         self.listener = tf.TransformListener()
 
     def marker_cb(self, msg):
         
         marker_array = MarkerArray()
+        pose_array = PoseArray()
+        pose_array.header.stamp = rospy.Time.now()
+        pose_array.header.frame_id = "base_link"
         
         id_count = 0
         for shape in msg.shapes:
             ps = PoseStamped()
-            ps.header.stamp = rospy.Time.now()
+            ps.header.stamp = pose_array.header.stamp
             ps.header.frame_id = FRAMEID
             ps.pose = shape.pose
             ps_base_link = self.listener.transformPose("base_link", ps)
@@ -51,9 +55,11 @@ class Visualization:
             #TODO set roll and pitch to 0 (fixed), only allow variation in yaw
             
             marker_array.markers += self.complete_box_marker(ps_base_link, id_count).markers
+            pose_array.poses.append(ps_base_link.pose)
             id_count += 1
 
-        self.pub.publish(marker_array)
+        self.pub_marker.publish(marker_array)
+        self.pub_poses.publish(pose_array)
 
 
     def complete_box_marker(self, ps, id):
