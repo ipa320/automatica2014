@@ -76,7 +76,7 @@ class GripperAction:
         except rospy.ServiceException:
             print "Service call failed, aborting action"
             return False
-        
+        rospy.sleep(0.5)
         return True
 
     def execute_cb(self, goal):
