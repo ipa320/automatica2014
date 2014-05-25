@@ -206,46 +206,48 @@ class MoveitInterface:
         p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
         return p
         
-    def pick(self, x,y, alpha):
+    def pick(self, x,y, alpha, force = False):
         if self.is_grasped():
            print "already grasped"
            return MoveItErrorCodes.SUCCESS
-        else:
-            p = self.make_object_pose(x,y,alpha)
-            self.pub_co.publish(make_box("object", p, (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
-            
-            p2 = deepcopy(p)
-            p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
-            
-            goal = make_pickup_goal([p,p2])
-            
-            ok = self.action_pickup.send_goal_and_wait(goal)
-            
-            if ok == GoalStatus.PREEMPTED:
-                return MoveItErrorCodes.PREEMPTED
-            if ok != GoalStatus.SUCCEEDED:
-                return MoveItErrorCodes.FAILURE
-            res = self.action_pickup.get_result()
-            return res.error_code.val
-    def place(self, x,y, alpha):
+           if not force:
+               return MoveItErrorCodes.SUCCESS
+        p = self.make_object_pose(x,y,alpha)
+        self.pub_co.publish(make_box("object", p, (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
+        
+        p2 = deepcopy(p)
+        p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
+        
+        goal = make_pickup_goal([p,p2])
+        
+        ok = self.action_pickup.send_goal_and_wait(goal)
+        
+        if ok == GoalStatus.PREEMPTED:
+            return MoveItErrorCodes.PREEMPTED
+        if ok != GoalStatus.SUCCEEDED:
+            return MoveItErrorCodes.FAILURE
+        res = self.action_pickup.get_result()
+        return res.error_code.val
+        
+    def place(self, x,y, alpha, force = False):
         if not self.is_grasped():
            print "not grasped"
-           return MoveItErrorCodes.SUCCESS
-        else:
-            p = self.make_object_pose(x,y,alpha)
-            p2 = deepcopy(p)
-            p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
-            
-            goal = make_place_goal([p,p2])
-            
-            ok = self.action_place.send_goal_and_wait(goal)
-            
-            if ok == GoalStatus.PREEMPTED:
-                return MoveItErrorCodes.PREEMPTED
-            if ok != GoalStatus.SUCCEEDED:
-                return MoveItErrorCodes.FAILURE
-            res = self.action_place.get_result()
-            return res.error_code.val
+           if not force:
+               return MoveItErrorCodes.SUCCESS
+        p = self.make_object_pose(x,y,alpha)
+        p2 = deepcopy(p)
+        p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
+        
+        goal = make_place_goal([p,p2])
+        
+        ok = self.action_place.send_goal_and_wait(goal)
+        
+        if ok == GoalStatus.PREEMPTED:
+            return MoveItErrorCodes.PREEMPTED
+        if ok != GoalStatus.SUCCEEDED:
+            return MoveItErrorCodes.FAILURE
+        res = self.action_place.get_result()
+        return res.error_code.val
 if __name__ == "__main__":
     rospy.init_node("test")
     test = MoveitInterface("")
