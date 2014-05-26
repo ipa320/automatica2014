@@ -42,6 +42,12 @@
   
   <include file="$(find automatica2014_object_filter)/launch/bringup_perception.launch" />
 
+  <!-- phidgets -->
+  <node name="buttons" pkg="cob_phidgets" type="phidgets_sensors">
+    <param name="update_mode" value="event"/>
+  </node>
+
+
   <!-- visualization -->
   <node name="automatica_visualization" pkg="automatica2014_visualization" type="visualization.py"/>
 

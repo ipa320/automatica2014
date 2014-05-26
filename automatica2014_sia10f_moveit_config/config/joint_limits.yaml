@@ -1,36 +1,36 @@
 joint_limits:
   sia10f_joint_6_b:
     has_velocity_limits: true
-    max_velocity: 3.48
+    max_velocity: 1.0
     has_acceleration_limits: true
     max_acceleration: 1
   sia10f_joint_3_e:
     has_velocity_limits: true
-    max_velocity: 2.96
+    max_velocity: 1.0
     has_acceleration_limits: true
     max_acceleration: 1
   sia10f_joint_2_l:
     has_velocity_limits: true
-    max_velocity: 2.96
+    max_velocity: 1.0
     has_acceleration_limits: true
     max_acceleration: 1
   sia10f_joint_5_r:
     has_velocity_limits: true
-    max_velocity: 3.48
+    max_velocity: 1.0
     has_acceleration_limits: true
     max_acceleration: 1
   sia10f_joint_1_s:
     has_velocity_limits: true
-    max_velocity: 2.96
+    max_velocity: 1.0
     has_acceleration_limits: true
     max_acceleration: 1
   sia10f_joint_7_t:
     has_velocity_limits: true
-    max_velocity: 6.97
+    max_velocity: 1.0
     has_acceleration_limits: true
     max_acceleration: 1
   sia10f_joint_4_u:
     has_velocity_limits: true
-    max_velocity: 2.96
+    max_velocity: 1.0
     has_acceleration_limits: true
     max_acceleration: 1

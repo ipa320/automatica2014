@@ -37,7 +37,7 @@
   </node>
   
   <!-- Auto initialization for the gripper -->
-  <node name="pg70_auto_init" pkg="automatica2014_pg70_auto_init" type="auto_init.py" />
+  <node name="pg70_auto_init" pkg="automatica2014_pg70_fake_joint" type="auto_init.py" />
   
   <!-- fake publisher for right joint -->
   <node name="pg70_fake_joint" pkg="automatica2014_pg70_fake_joint" type="fake_joint.py" />

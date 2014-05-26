@@ -6,7 +6,7 @@ import tf.transformations
 from moveit_msgs.msg import *
 from moveit_msgs.srv import GetPlanningScene,GetPlanningSceneRequest
 from shape_msgs.msg import SolidPrimitive, Plane
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, PoseArray
 from copy import deepcopy
 import math
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
@@ -42,7 +42,8 @@ def make_top_grasp(pose):
     grasp.id = "top"
 
     # open
-    grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[1,1])
+    #grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[1.0,1.0])
+    grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[0.03,0.03])
 
     # close
     grasp.grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[0.01,0.01])
@@ -78,7 +79,11 @@ def make_pickup_goal(poses):
     goal.support_surface_name = "table"
     goal.allow_gripper_support_collision = False
     # The maximum amount of time the motion planner is allowed to plan for
-    goal.allowed_planning_time = 1.0
+    goal.allowed_planning_time = 5.0
+    goal.planning_options.planning_scene_diff.is_diff = True
+    goal.planning_options.planning_scene_diff.robot_state.is_diff = True
+    
+    
     goal.attached_object_touch_links = ['gripper_link','finger_left_link','finger_right_link']
     return goal
 
@@ -105,8 +110,29 @@ def make_place_goal(poses):
     
     goal.support_surface_name = "table"
     goal.allowed_planning_time = 5.0
+
+    goal.planning_options.planning_scene_diff.is_diff = True
+    goal.planning_options.planning_scene_diff.robot_state.is_diff = True
     return goal
+
+def make_move_goal(joints,values):
+    goal = MoveGroupGoal()
+    goal.group_name = arm
+    goal.allowed_planning_time = 5.0
     
+    c = Constraints()
+    for (n,v) in zip(joints,values):
+        jc = JointConstraint()
+        jc.name = j
+        jc.position = v
+        jc.tolerance_above = jc.tolerance_below = 0.005
+    c.joint_constraints.append(jc)
+    goal.goal_constraints = [c]
+
+    goal.planning_options.planning_scene_diff.is_diff = True
+    goal.planning_options.planning_scene_diff.robot_state.is_diff = True
+    return goal
+
 def add_box(co, pose, size = (0, 0, 1), offset=(0,0,0)):
     box = SolidPrimitive()
     box.type = SolidPrimitive.BOX
@@ -130,8 +156,8 @@ def make_box(name, pose, size = (0, 0, 1), offset=(0,0,0)):
         
 class MoveitInterface:
     TABLE_HEIGHT = 0.01
-    OBJECT_HEIGHT = 0.04
-    OBJECT_LENGTH = 0.1
+    OBJECT_HEIGHT = 0.05
+    OBJECT_LENGTH = 0.15
     TABLE1 = (0.37, 1.045, 0)
     TABLE2 = (0.945, 1.045, 0)
     TABLE_SIZE = (0.4,0.6,0.02,0.01, 0.07) # x y border, floor, wall
@@ -175,7 +201,9 @@ class MoveitInterface:
         self.srv_ps  = rospy.ServiceProxy(ns + '/get_planning_scene', GetPlanningScene)  
         self.action_pickup = actionlib.SimpleActionClient(ns+'/pickup', PickupAction)
         self.action_place = actionlib.SimpleActionClient(ns+'/place', PlaceAction)
+        self.action_move = actionlib.SimpleActionClient(ns+'/move_group', MoveGroupAction)
         rospy.sleep(2.0)
+        self.transit = False
         
         self.init_table()
         
@@ -185,7 +213,7 @@ class MoveitInterface:
         
     def pick_one_of(self, poses):
         for pose in poses:
-            r,p,y = tf.transformations.euler_from_quaternion(pose.orientation)
+            r,p,y = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
             res = self.pick(pose.position.x,pose.position.y,y)
             if res in [MoveItErrorCodes.PLANNING_FAILED, MoveItErrorCodes.NO_IK_SOLUTION]:
                 continue
@@ -193,7 +221,7 @@ class MoveitInterface:
                 break
         return res == MoveItErrorCodes.SUCCESS
         
-    def make_object_pose(self, x, y, alpha, header = None):
+    def make_object_pose(self, x, y, alpha, offset = 0, header = None):
         p = PoseStamped()
         if not header:
             p.header.frame_id = "base_link"
@@ -202,53 +230,111 @@ class MoveitInterface:
             p.header = header
         p.pose.position.x = x
         p.pose.position.y = y
-        p.pose.position.z = self.TABLE_HEIGHT + self.OBJECT_HEIGHT/2.0
+        p.pose.position.z = self.TABLE_HEIGHT + self.OBJECT_HEIGHT/2.0 + offset
         p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
         return p
         
-    def pick(self, x,y, alpha):
+    def move(names,values):
+        if not self.transit:
+            return
+        self.transit = True
+        self.action_pickup.cancel()
+        self.action_pickup.cancel()
+
+        goal = make_move_goal(names, values)
+        ok = self.action_pickup.send_goal_and_wait(goal)
+        if ok != GoalStatus.SUCCEEDED:
+            return false
+        res = self.action_move.get_result()
+        self.transit = False
+        return res.error_code.val == MoveItErrorCodes.SUCCESS
+
+    def pick(self, x,y, alpha, force = False):
         if self.is_grasped():
            print "already grasped"
            return MoveItErrorCodes.SUCCESS
-        else:
-            p = self.make_object_pose(x,y,alpha)
-            self.pub_co.publish(make_box("object", p, (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
-            
-            p2 = deepcopy(p)
-            p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
-            
-            goal = make_pickup_goal([p,p2])
-            
-            ok = self.action_pickup.send_goal_and_wait(goal)
-            
-            if ok == GoalStatus.PREEMPTED:
-                return MoveItErrorCodes.PREEMPTED
-            if ok != GoalStatus.SUCCEEDED:
-                return MoveItErrorCodes.FAILURE
-            res = self.action_pickup.get_result()
-            return res.error_code.val
-    def place(self, x,y, alpha):
+           if not force:
+               return MoveItErrorCodes.SUCCESS
+        p = self.make_object_pose(x,y,alpha)
+        self.pub_co.publish(make_box("object", p, (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
+        
+        p2 = deepcopy(p)
+        p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
+        
+        goal = make_pickup_goal([p,p2])
+        
+        ok = self.action_pickup.send_goal_and_wait(goal)
+        
+        if ok == GoalStatus.PREEMPTED:
+            return MoveItErrorCodes.PREEMPTED
+        if ok != GoalStatus.SUCCEEDED:
+            return MoveItErrorCodes.FAILURE
+        res = self.action_pickup.get_result()
+        return res.error_code.val
+        
+    def place_somewhere(self, poses):
+        
+        pl = []
+        for pose in poses:
+            _,_,alpha = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
+            pl.append(pose)
+            for i in range(6):
+                p2 = deepcopy(pose)
+                p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi/*3)
+                pl.append(p2)
+        shuffle(pl)
+
+        goal = make_place_goal([p,p2])
+        ok = self.action_place.send_goal_and_wait(goal)
+        
+        if ok != GoalStatus.SUCCEEDED:
+            return False
+        res = self.action_place.get_result()
+        return res.error_code.val == MoveItErrorCodes.SUCCESS
+        
+        return res == MoveItErrorCodes.SUCCESS
+    def place(self, x,y, alpha, force = False):
         if not self.is_grasped():
            print "not grasped"
-           return MoveItErrorCodes.SUCCESS
-        else:
-            p = self.make_object_pose(x,y,alpha)
-            p2 = deepcopy(p)
-            p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
-            
-            goal = make_place_goal([p,p2])
-            
-            ok = self.action_place.send_goal_and_wait(goal)
-            
-            if ok == GoalStatus.PREEMPTED:
-                return MoveItErrorCodes.PREEMPTED
-            if ok != GoalStatus.SUCCEEDED:
-                return MoveItErrorCodes.FAILURE
-            res = self.action_place.get_result()
-            return res.error_code.val
+           if not force:
+               return MoveItErrorCodes.SUCCESS
+        p = self.make_object_pose(x,y,alpha,0.005)
+        p2 = deepcopy(p)
+        p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
+        
+        goal = make_place_goal([p,p2])
+        
+        ok = self.action_place.send_goal_and_wait(goal)
+        
+        if ok == GoalStatus.PREEMPTED:
+            return MoveItErrorCodes.PREEMPTED
+        if ok != GoalStatus.SUCCEEDED:
+            return MoveItErrorCodes.FAILURE
+        res = self.action_place.get_result()
+        return res.error_code.val
+
+
 if __name__ == "__main__":
     rospy.init_node("test")
-    test = MoveitInterface("")
-    print test.pick(0.4,1.0,0)
-    print test.place(0.4,1.0,0)
+    test = MoveitInterface("ur5")
+    
+    rospy.Subscriber("/automatica_poses", PoseArray, poses_cb)
+    
+    while not rospy.is_shutdown():
+        if _current_poses:
+            print "pick"
+            print _current_poses
+            #yaw = tf.transformations.euler_from_quaternion([_current_pose.orientation.x, _current_pose.orientation.y, _current_pose.orientation.z, _current_pose.orientation.w])[2]
+            #print "yaw:", yaw
+            #print test.pick(_current_pose.position.x,_current_pose.position.y,yaw)
+            ret = test.pick_one_of(deepcopy(_current_poses))
+            print ret
+            _current_poses = None
+            if ret:
+                break
+        
+        #print "pick", test.pick(0.35,1.0,0)
+        rospy.sleep(0.5)
+        #print "pick", test.pick(0.94,1.045,0)
+        #rospy.sleep(0.5)
     rospy.spin()

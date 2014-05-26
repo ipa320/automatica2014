@@ -6,7 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /PointCloudRaw1
       Splitter Ratio: 0.541562
     Tree Height: 567
   - Class: rviz/Selection
@@ -144,7 +143,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.01
       Style: Flat Squares
-      Topic: /cam3d_env/depth_in/points_xyzrgb
+      Topic: /cam3d_env/depth_registered/points
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -242,10 +241,10 @@ Visualization Manager:
         Z: 1.27314
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.934796
+      Pitch: 0.704796
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.19357
+      Yaw: 0.0853868
     Saved: ~
 Window Geometry:
   Displays:
@@ -265,5 +264,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1855
-  X: 59
-  Y: 52
+  X: 58
+  Y: 24

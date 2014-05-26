@@ -1,7 +1,7 @@
     <robot xmlns:xacro="http://ros.org/wiki/xacro" name="sia10f">
 
                 <xacro:property name="gripper_origin">
-                    <origin xyz="0. 0. 0" rpy="0 0 0" />
+                    <origin xyz="0. 0. 0.0225" rpy="0 0 0" />
                 </xacro:property>
 
                 <xacro:property name="flange_origin">
@@ -55,9 +55,16 @@
                 <joint name="gripper_grasp_joint" type="fixed" >
                     <parent link="gripper_link" />
                     <child link="gripper_grasp_link" />
-                    <origin xyz="0.0 0.0 0.12" rpy="0 3.14 1.5708"/>
+                    <origin xyz="0.0 0.0 0.14" rpy="0 3.14 1.5708"/>
                 </joint>
 
-                <link name="gripper_grasp_link" />
+                <link name="gripper_grasp_link" >
+                    <collision>
+                        <origin xyz="0.0 0.0 0.1" rpy="0 0 0"/>
+                        <geometry>
+                            <box size="0.01 0.01 0.01"/>
+                        </geometry>
+                    </collision>
+                </link>
                    
         </robot>
