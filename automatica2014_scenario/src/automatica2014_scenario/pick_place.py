@@ -115,7 +115,24 @@ def make_place_goal(poses):
     goal.planning_options.planning_scene_diff.robot_state.is_diff = True
     return goal
 
+def make_move_goal(joints,values):
+    goal = MoveGroupGoal()
+    goal.group_name = arm
+    goal.allowed_planning_time = 5.0
     
+    c = Constraints()
+    for (n,v) in zip(joints,values):
+        jc = JointConstraint()
+        jc.name = j
+        jc.position = v
+        jc.tolerance_above = jc.tolerance_below = 0.005
+    c.joint_constraints.append(jc)
+    goal.goal_constraints = [c]
+
+    goal.planning_options.planning_scene_diff.is_diff = True
+    goal.planning_options.planning_scene_diff.robot_state.is_diff = True
+    return goal
+
 def add_box(co, pose, size = (0, 0, 1), offset=(0,0,0)):
     box = SolidPrimitive()
     box.type = SolidPrimitive.BOX
@@ -184,6 +201,7 @@ class MoveitInterface:
         self.srv_ps  = rospy.ServiceProxy(ns + '/get_planning_scene', GetPlanningScene)  
         self.action_pickup = actionlib.SimpleActionClient(ns+'/pickup', PickupAction)
         self.action_place = actionlib.SimpleActionClient(ns+'/place', PlaceAction)
+        self.action_move = actionlib.SimpleActionClient(ns+'/move_group', MoveGroupAction)
         rospy.sleep(2.0)
         
         self.init_table()
@@ -215,6 +233,14 @@ class MoveitInterface:
         p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
         return p
         
+    def move(names,values):
+        goal = make_move_goal(names, values)
+        ok = self.action_pickup.send_goal_and_wait(goal)
+        if ok != GoalStatus.SUCCEEDED:
+            return false
+        res = self.action_move.get_result()
+        return res.error_code.val == MoveItErrorCodes.SUCCESS
+
     def pick(self, x,y, alpha, force = False):
         if self.is_grasped():
            print "already grasped"
