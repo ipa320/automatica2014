@@ -20,7 +20,7 @@
     </xacro:property>
 
     <xacro:property name="sia10f_origin">
-        <origin xyz="0.45 0.35 0.015" rpy="0 0 0" /> <!-- measured -->
+        <origin xyz="0.605 0.553 0.015" rpy="0 0 1.5708" /> <!-- measured -->
         <!--origin xyz="0.45 0.37 0.015" rpy="0 0 0" /--> <!-- manually calibrated -->
     </xacro:property>
 
