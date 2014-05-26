@@ -211,10 +211,13 @@ class MoveitInterface:
         res = self.srv_ps(GetPlanningSceneRequest(PlanningSceneComponents(4)))
         return len(res.scene.robot_state.attached_collision_objects) > 0
         
-    def pick_one_of(self, poses):
-        for pose in poses:
+    def pick_one_of(self, poses, others):
+        shuffle(poses)
+        while not poses.empty():
+            pose = poses.pop()
             r,p,y = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
-            res = self.pick(pose.position.x,pose.position.y,y)
+            res = self.pick(pose.position.x,pose.position.y,y, others + poses)
+            others.append(pose)
             if res in [MoveItErrorCodes.PLANNING_FAILED, MoveItErrorCodes.NO_IK_SOLUTION]:
                 continue
             else:
@@ -243,7 +246,7 @@ class MoveitInterface:
         p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
         return p
         
-    def move(names,values):
+    def move(names,values, others = []):
         if not self.transit:
             return
         self.transit = True
@@ -251,6 +254,8 @@ class MoveitInterface:
         self.action_pickup.cancel()
 
         goal = make_move_goal(names, values)
+        goal.planning_options.planning_scene_diff.world.collision_objects = self.make_collision_objects(others)
+        
         ok = self.action_pickup.send_goal_and_wait(goal)
         if ok != GoalStatus.SUCCEEDED:
             return false
@@ -258,19 +263,20 @@ class MoveitInterface:
         self.transit = False
         return res.error_code.val == MoveItErrorCodes.SUCCESS
 
-    def pick(self, x,y, alpha, force = False):
+    def pick(self, x,y, alpha, others= [], force = False):
         if self.is_grasped():
            print "already grasped"
            return MoveItErrorCodes.SUCCESS
            if not force:
                return MoveItErrorCodes.SUCCESS
         p = self.make_object_pose(x,y,alpha)
-        self.pub_co.publish(make_box("object", p, (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
+        self.pub_co.publish(make_box("object", p, (self.OBJECT_HEIGHT*2,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
         
         p2 = deepcopy(p)
         p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
         
         goal = make_pickup_goal([p,p2])
+        goal.planning_options.planning_scene_diff.world.collision_objects = self.make_collision_objects(others)
         
         ok = self.action_pickup.send_goal_and_wait(goal)
         
@@ -281,7 +287,7 @@ class MoveitInterface:
         res = self.action_pickup.get_result()
         return res.error_code.val
         
-    def place_somewhere(self, poses):
+    def place_somewhere(self, poses, others=[]):
         
         pl = []
         for pose in poses:
@@ -294,6 +300,8 @@ class MoveitInterface:
         shuffle(pl)
 
         goal = make_place_goal([p,p2])
+        goal.planning_options.planning_scene_diff.world.collision_objects = self.make_collision_objects(others)
+
         ok = self.action_place.send_goal_and_wait(goal)
         
         if ok != GoalStatus.SUCCEEDED:
@@ -302,7 +310,7 @@ class MoveitInterface:
         return res.error_code.val == MoveItErrorCodes.SUCCESS
         
         return res == MoveItErrorCodes.SUCCESS
-    def place(self, x,y, alpha, force = False):
+    def place(self, x,y, alpha, others=[], force = False):
         if not self.is_grasped():
            print "not grasped"
            if not force:
@@ -312,6 +320,7 @@ class MoveitInterface:
         p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
         
         goal = make_place_goal([p,p2])
+        goal.planning_options.planning_scene_diff.world.collision_objects = self.make_collision_objects(others)
         
         ok = self.action_place.send_goal_and_wait(goal)
         
@@ -321,7 +330,6 @@ class MoveitInterface:
             return MoveItErrorCodes.FAILURE
         res = self.action_place.get_result()
         return res.error_code.val
-
 
 if __name__ == "__main__":
     rospy.init_node("test")
