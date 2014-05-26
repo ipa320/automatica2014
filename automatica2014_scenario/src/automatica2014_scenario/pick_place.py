@@ -110,7 +110,11 @@ def make_place_goal(poses):
     
     goal.support_surface_name = "table"
     goal.allowed_planning_time = 5.0
+
+    goal.planning_options.planning_scene_diff.is_diff = True
+    goal.planning_options.planning_scene_diff.robot_state.is_diff = True
     return goal
+
     
 def add_box(co, pose, size = (0, 0, 1), offset=(0,0,0)):
     box = SolidPrimitive()
