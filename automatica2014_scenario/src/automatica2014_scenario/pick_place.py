@@ -264,6 +264,27 @@ class MoveitInterface:
         res = self.action_pickup.get_result()
         return res.error_code.val
         
+    def place_somewhere(self, poses):
+        
+        pl = []
+        for pose in poses:
+            _,_,alpha = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
+            pl.append(pose)
+            for i in range(6):
+                p2 = deepcopy(pose)
+                p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi/*3)
+                pl.append(p2)
+        shuffle(pl)
+
+        goal = make_place_goal([p,p2])
+        ok = self.action_place.send_goal_and_wait(goal)
+        
+        if ok != GoalStatus.SUCCEEDED:
+            return False
+        res = self.action_place.get_result()
+        return res.error_code.val == MoveItErrorCodes.SUCCESS
+        
+        return res == MoveItErrorCodes.SUCCESS
     def place(self, x,y, alpha, force = False):
         if not self.is_grasped():
            print "not grasped"
