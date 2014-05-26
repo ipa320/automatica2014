@@ -14,7 +14,7 @@
         </include>
 	</group>
 
-	<group>
+	<group if="true">
     	<machine name="pc2" address="$(arg pc2)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
 	
         <remap from="/gripper_controller" to="sia10f/gripper_controller"/>
@@ -36,7 +36,7 @@
         <remap from="/gripper_controller/module_ids" to="/sia10f/gripper_controller/module_ids"/>
 
         <remap from="/sia10f/arm_controller/robot_description" to="/sia10f/robot_description"/>
-        <remap from="/sia10f/arm_controller/joint_states" to="/sia10f/joint_states"/>
+        <!--remap from="/sia10f/arm_controller/joint_states" to="/sia10f/joint_states"/-->
 
         <remap from="/robot_description" to="/sia10f/robot_description"/>
         <remap from="/joint_states" to="/sia10f/joint_states"/>
@@ -51,7 +51,7 @@
         <include ns="sia10f" file="$(find automatica2014_bringup)/launch/sia10f.launch"/>
 	</group>
 
-	<group>
+	<group if="true">
 		<machine name="pc3" address="$(arg pc3)" env-loader="$(find automatica2014_bringup)/env.sh" default="true"/>
 
         <remap from="/ur5/arm_controller/robot_description" to="/ur5/robot_description"/>

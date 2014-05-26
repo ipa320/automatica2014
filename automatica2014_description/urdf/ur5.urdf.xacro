@@ -95,7 +95,14 @@
         <origin xyz="0.0 0.0 -0.18" rpy="0 0 1.57"/>
     </joint>
     
-    <link name="gripper_grasp_link"/>
+    <link name="gripper_grasp_link" >
+        <collision>
+            <origin xyz="0.0 0.0 0.15" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.01 0.01 0.01"/>
+            </geometry>
+        </collision>
+    </link>
 
 
 </robot>

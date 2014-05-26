@@ -15,6 +15,7 @@
   <include ns="arm_controller" file="$(find motoman_driver)/launch/robot_interface_streaming_$(arg controller).launch">
 	<arg name="robot_ip"   value="$(arg robot_ip)" />
   </include>
+   <node name="sia10f_js_relay" pkg="topic_tools" type="relay" args="arm_controller/joint_states joint_states" />
 
   <!-- publish the robot state (tf transforms) -->
   <node name="$(anon robot_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher">
@@ -34,6 +35,10 @@
   <rosparam ns="gripper_controller" command="load" file="$(find automatica2014_bringup)/config/pg70.yaml" />
   <node ns="gripper_controller" name="joint_trajectory_controller" pkg="cob_trajectory_controller" type="cob_trajectory_controller" cwd="node" respawn="false" output="screen">
   </node>
+  
+  <!-- Auto initialization for the gripper -->
+  <node name="pg70_auto_init" pkg="automatica2014_pg70_fake_joint" type="auto_init.py" />
+  
   <!-- fake publisher for right joint -->
   <node name="pg70_fake_joint" pkg="automatica2014_pg70_fake_joint" type="fake_joint.py" />
 
