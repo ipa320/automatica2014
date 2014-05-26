@@ -203,6 +203,7 @@ class MoveitInterface:
         self.action_place = actionlib.SimpleActionClient(ns+'/place', PlaceAction)
         self.action_move = actionlib.SimpleActionClient(ns+'/move_group', MoveGroupAction)
         rospy.sleep(2.0)
+        self.transit = False
         
         self.init_table()
         
@@ -234,11 +235,18 @@ class MoveitInterface:
         return p
         
     def move(names,values):
+        if not self.transit:
+            return
+        self.transit = True
+        self.action_pickup.cancel()
+        self.action_pickup.cancel()
+
         goal = make_move_goal(names, values)
         ok = self.action_pickup.send_goal_and_wait(goal)
         if ok != GoalStatus.SUCCEEDED:
             return false
         res = self.action_move.get_result()
+        self.transit = False
         return res.error_code.val == MoveItErrorCodes.SUCCESS
 
     def pick(self, x,y, alpha, force = False):
