@@ -193,7 +193,7 @@ class MoveitInterface:
                 break
         return res == MoveItErrorCodes.SUCCESS
         
-    def make_object_pose(self, x, y, alpha, header = None):
+    def make_object_pose(self, x, y, alpha, offset = 0, header = None):
         p = PoseStamped()
         if not header:
             p.header.frame_id = "base_link"
@@ -202,7 +202,7 @@ class MoveitInterface:
             p.header = header
         p.pose.position.x = x
         p.pose.position.y = y
-        p.pose.position.z = self.TABLE_HEIGHT + self.OBJECT_HEIGHT/2.0
+        p.pose.position.z = self.TABLE_HEIGHT + self.OBJECT_HEIGHT/2.0 + offset
         p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
         return p
         
@@ -234,7 +234,7 @@ class MoveitInterface:
            print "not grasped"
            if not force:
                return MoveItErrorCodes.SUCCESS
-        p = self.make_object_pose(x,y,alpha)
+        p = self.make_object_pose(x,y,alpha,0.01)
         p2 = deepcopy(p)
         p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
         
