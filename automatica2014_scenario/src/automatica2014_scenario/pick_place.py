@@ -42,7 +42,8 @@ def make_top_grasp(pose):
     grasp.id = "top"
 
     # open
-    grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[1.0,1.0])
+    #grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[1.0,1.0])
+    grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[0.03,0.03])
 
     # close
     grasp.grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[0.01,0.01])
@@ -79,6 +80,9 @@ def make_pickup_goal(poses):
     goal.allow_gripper_support_collision = False
     # The maximum amount of time the motion planner is allowed to plan for
     goal.allowed_planning_time = 5.0
+    goal.planning_options.planning_scene_diff.is_diff = True
+    goal.planning_options.planning_scene_diff.robot_state.is_diff = True
+    
     
     goal.attached_object_touch_links = ['gripper_link','finger_left_link','finger_right_link']
     return goal
@@ -131,8 +135,8 @@ def make_box(name, pose, size = (0, 0, 1), offset=(0,0,0)):
         
 class MoveitInterface:
     TABLE_HEIGHT = 0.01
-    OBJECT_HEIGHT = 0.045
-    OBJECT_LENGTH = 0.1
+    OBJECT_HEIGHT = 0.05
+    OBJECT_LENGTH = 0.15
     TABLE1 = (0.37, 1.045, 0)
     TABLE2 = (0.945, 1.045, 0)
     TABLE_SIZE = (0.4,0.6,0.02,0.01, 0.07) # x y border, floor, wall
@@ -235,7 +239,7 @@ class MoveitInterface:
            print "not grasped"
            if not force:
                return MoveItErrorCodes.SUCCESS
-        p = self.make_object_pose(x,y,alpha,0.01)
+        p = self.make_object_pose(x,y,alpha,0.005)
         p2 = deepcopy(p)
         p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
         
@@ -249,14 +253,11 @@ class MoveitInterface:
             return MoveItErrorCodes.FAILURE
         res = self.action_place.get_result()
         return res.error_code.val
-_current_poses = None
-def poses_cb(msg):
-        global _current_poses
-        _current_poses = msg.poses
+
 
 if __name__ == "__main__":
     rospy.init_node("test")
-    test = MoveitInterface("sia10f")
+    test = MoveitInterface("ur5")
     
     rospy.Subscriber("/automatica_poses", PoseArray, poses_cb)
     
@@ -267,8 +268,11 @@ if __name__ == "__main__":
             #yaw = tf.transformations.euler_from_quaternion([_current_pose.orientation.x, _current_pose.orientation.y, _current_pose.orientation.z, _current_pose.orientation.w])[2]
             #print "yaw:", yaw
             #print test.pick(_current_pose.position.x,_current_pose.position.y,yaw)
-            print test.pick_one_of(deepcopy(_current_poses))
+            ret = test.pick_one_of(deepcopy(_current_poses))
+            print ret
             _current_poses = None
+            if ret:
+                break
         
         #print "pick", test.pick(0.35,1.0,0)
         rospy.sleep(0.5)
