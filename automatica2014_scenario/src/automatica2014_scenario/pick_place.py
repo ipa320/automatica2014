@@ -221,6 +221,15 @@ class MoveitInterface:
                 break
         return res == MoveItErrorCodes.SUCCESS
         
+    def make_collision_objects(self.poses):
+        objs = []
+        i = 0
+        for pose in poses:
+            r,p,y = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
+            objs.append(make_box("object_"+str(i), make_object_pose(pose.position.x,pose.position.y,y), (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
+            i += 1
+        return objs
+        
     def make_object_pose(self, x, y, alpha, offset = 0, header = None):
         p = PoseStamped()
         if not header:
