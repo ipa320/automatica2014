@@ -1,0 +1,80 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="lacquey">
+
+    <xacro:macro name="lacquey_gripper" params="prefix parent *origin">
+        <!-- gripper -->
+        <joint name="${prefix}joint" type="fixed" >
+            <parent link="${parent}" />
+            <child link="${prefix}gripper_link" />
+            <xacro:insert_block name="origin" />
+        </joint>
+
+        <link name="${prefix}gripper_link">
+            <visual>
+                <geometry>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/${prefix}gripper_base_lacquey.stl"/>
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/${prefix}gripper_base_lacquey_coll.stl"/>
+                </geometry>
+            </collision>
+        </link>
+
+            <joint name="${prefix}finger_left_joint" type="revolute" >
+            <parent link="${prefix}gripper_link" />
+            <child link="${prefix}finger_left_link" />
+            <limit effort="100" lower="0" upper="1" velocity="1.0"/>
+            <calibration rising="0.0"/>
+            <origin xyz="0.027 -0.0025 0.091" rpy="1.57 0 3.14"/>
+            <axis xyz="0 0 1" />
+        </joint>
+
+        <link name="${prefix}finger_left_link">
+            <visual>
+                <geometry>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/finger_left_lacquey.stl"/>
+                </geometry>
+                <material name="blue">
+                    <color rgba="0 0 1 1"/>
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/finger_left_lacquey_coll.stl"/>
+                </geometry>
+                <material name="blue">
+                    <color rgba="0 0 1 1"/>
+                </material>
+            </collision>
+        </link>
+
+            <joint name="${prefix}finger_right_joint" type="revolute" >
+            <parent link="${prefix}gripper_link" />
+            <child link="${prefix}finger_right_link" />
+            <limit effort="100" lower="0" upper="1" velocity="1.0"/>
+            <calibration rising="0.0"/>
+            <origin xyz="-0.027 -0.0025 0.091" rpy="-1.57 0 0"/>
+            <axis xyz="0 0 -1" />
+        </joint>
+
+        <link name="${prefix}finger_right_link">
+            <visual>
+                <geometry>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/finger_right_lacquey.stl"/>
+                </geometry>
+                <material name="blue">
+                    <color rgba="0 0 1 1"/>
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/finger_right_lacquey_coll.stl"/>
+                </geometry>
+                    <material name="blue">
+                    <color rgba="0 0 1 1"/>
+                </material>
+            </collision>
+        </link>
+    </xacro:macro>
+</robot>
