@@ -224,12 +224,12 @@ class MoveitInterface:
                 break
         return res == MoveItErrorCodes.SUCCESS
         
-    def make_collision_objects(self.poses):
+    def make_collision_objects(self, poses):
         objs = []
         i = 0
-        for pose in poses:
-            r,p,y = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
-            objs.append(make_box("object_"+str(i), make_object_pose(pose.position.x,pose.position.y,y), (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
+        for p in poses:
+            _,_,angle = tf.transformations.euler_from_quaternion([p.pose.orientation.x, p.pose.orientation.y , p.pose.orientation.z, p.pose.orientation.w])
+            objs.append(make_box("object_"+str(i), self.make_object_pose(p.pose.position.x,p.pose.position.y,angle), (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
             i += 1
         return objs
         
@@ -295,7 +295,7 @@ class MoveitInterface:
             pl.append(pose)
             for i in range(6):
                 p2 = deepcopy(pose)
-                p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi/*3)
+                p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi/3)
                 pl.append(p2)
         shuffle(pl)
 
