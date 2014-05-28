@@ -2,7 +2,7 @@
      <link name="finger_left_link">
         <visual>
             <geometry>
-            <mesh filename="package://automatica2014_description/meshes/finger_left.stl"/>
+            <mesh filename="package://automatica2014_description/meshes/Schunk/finger_left_schunk.stl"/>
             </geometry>
             <material name="silver">
                             <color rgba="1 1 1 1"/>
@@ -10,7 +10,7 @@
         </visual>
         <collision>
             <geometry>
-                <mesh filename="package://automatica2014_description/meshes/finger_left.stl"/>
+                <mesh filename="package://automatica2014_description/meshes/Schunk/finger_left_schunk.stl"/>
             </geometry>
             <material name="silver">
                 <color rgba="1 1 1 1"/>
@@ -21,7 +21,7 @@
     <link name="finger_right_link">
         <visual>
             <geometry>
-            <mesh filename="package://automatica2014_description/meshes/finger_right.stl"/>
+            <mesh filename="package://automatica2014_description/meshes/Schunk/finger_right_schunk.stl"/>
             </geometry>
             <material name="silver">
                 <color rgba="1 1 1 1"/>
@@ -29,7 +29,7 @@
         </visual>
         <collision>
             <geometry>
-                <mesh filename="package://automatica2014_description/meshes/finger_right.stl"/>
+                <mesh filename="package://automatica2014_description/meshes/Schunk/finger_right_schunk.stl"/>
             </geometry>
             <material name="silver">
                 <color rgba="1 1 1 1"/>
@@ -40,7 +40,7 @@
     <link name="gripper_link">
         <visual>
             <geometry>
-            <mesh filename="package://automatica2014_description/meshes/gripper.stl" scale="0.001 0.001 0.001"/>
+            <mesh filename="package://automatica2014_description/meshes/Schunk/gripper_schunk.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="blue">
                 <color rgba="0 0 1 1"/>
@@ -48,7 +48,7 @@
         </visual>
         <collision>
             <geometry>
-                <mesh filename="package://automatica2014_description/meshes/gripper.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="package://automatica2014_description/meshes/Schunk/gripper_schunk.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="blue">
                 <color rgba="0 0 1 1"/>
