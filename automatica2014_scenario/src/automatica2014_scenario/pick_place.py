@@ -333,25 +333,12 @@ class MoveitInterface:
 
 if __name__ == "__main__":
     rospy.init_node("test")
-    test = MoveitInterface("ur5")
+    test = MoveitInterface("")
     
-    rospy.Subscriber("/automatica_poses", PoseArray, poses_cb)
-    
+    others = [ test.make_object_pose(0.94,0.645,0) ]
     while not rospy.is_shutdown():
-        if _current_poses:
-            print "pick"
-            print _current_poses
-            #yaw = tf.transformations.euler_from_quaternion([_current_pose.orientation.x, _current_pose.orientation.y, _current_pose.orientation.z, _current_pose.orientation.w])[2]
-            #print "yaw:", yaw
-            #print test.pick(_current_pose.position.x,_current_pose.position.y,yaw)
-            ret = test.pick_one_of(deepcopy(_current_poses))
-            print ret
-            _current_poses = None
-            if ret:
-                break
-        
-        #print "pick", test.pick(0.35,1.0,0)
+        print "pick", test.pick(0.35,1.0,0)
         rospy.sleep(0.5)
-        #print "pick", test.pick(0.94,1.045,0)
-        #rospy.sleep(0.5)
+        print "place", test.place(0.94,1.045,0,others)
+        rospy.sleep(0.5)
     rospy.spin()
