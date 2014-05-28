@@ -15,11 +15,13 @@
     
     <xacro:ur5_robot prefix="ur5_"/>
 
+    <!-- gripper -->
     <xacro:lacquey_gripper prefix="" parent="ur5_ee_link">
         <origin xyz="0.0 0.0 0.0" rpy="0 1.57 0"/>
     </xacro:lacquey_gripper>
 
-    <!-- gripper -->
+    <!-- grasp link -->
+
     <joint name="gripper_grasp_joint" type="fixed" >
         <parent link="gripper_link" />
         <child link="gripper_grasp_link" />
@@ -34,6 +36,5 @@
             </geometry>
         </collision>
     </link>
-
 
 </robot>

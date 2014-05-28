@@ -11,12 +11,12 @@
         <link name="${prefix}gripper_link">
             <visual>
                 <geometry>
-                    <mesh filename="package://automatica2014_description/meshes/Lacquey/${prefix}gripper_base_lacquey.stl"/>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/gripper_base_lacquey.stl"/>
                 </geometry>
             </visual>
             <collision>
                 <geometry>
-                    <mesh filename="package://automatica2014_description/meshes/Lacquey/${prefix}gripper_base_lacquey_coll.stl"/>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/gripper_base_lacquey_coll.stl"/>
                 </geometry>
             </collision>
         </link>
