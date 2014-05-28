@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://ros.org/wiki/xacro">
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="cell">
 
     <xacro:property name="base_origin">
         <origin xyz="0 0 0.95" rpy="0 0 0" />
@@ -35,7 +35,7 @@
     <link name="base_link">
         <visual>
             <geometry>
-                <mesh filename="package://automatica2014_description/meshes/cell.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="package://automatica2014_description/meshes/cell.dae" scale="1 1 1"/>
             </geometry>
         </visual>
         <collision>
