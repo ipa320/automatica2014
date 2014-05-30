@@ -35,7 +35,7 @@ def make_joint_trajectory(names, points):
     jt.points = [pt]
     return jt
     
-def make_top_grasp(pose):
+def make_top_grasp(pose, opened, closed):
     # a list of possible grasps to be used. At least one grasp must be filled in
     #manipulation_msgs/Grasp[] possible_grasps
     grasp = Grasp()
@@ -43,10 +43,10 @@ def make_top_grasp(pose):
 
     # open
     #grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[1.0,1.0])
-    grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[0.03,0.03])
+    grasp.pre_grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],opened)
 
     # close
-    grasp.grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],[0.01,0.01])
+    grasp.grasp_posture = make_joint_trajectory(['finger_left_joint','finger_right_joint'],closed)
 
     grasp.grasp_pose = pose
 
@@ -65,7 +65,7 @@ def make_top_grasp(pose):
     grasp.post_place_retreat = deepcopy(grasp.pre_grasp_approach)
     return grasp
     
-def make_pickup_goal(poses):
+def make_pickup_goal(poses, opened, closed):
     goal = PickupGoal()
     goal.target_name = "object"
     goal.group_name = "arm"
@@ -74,7 +74,7 @@ def make_pickup_goal(poses):
     #float32 max_contact_force
 
     #string[] allowed_touch_objects
-    goal.possible_grasps = [make_top_grasp(pose) for pose in poses] 
+    goal.possible_grasps = [make_top_grasp(pose, closed, opened) for pose in poses] 
     
     goal.support_surface_name = "table"
     goal.allow_gripper_support_collision = False
@@ -195,7 +195,7 @@ class MoveitInterface:
         add_box(wall2,p2.pose, (x,border,wall),(0,-(y/2.0-border/2.0),wall/2.0)) # left
         self.pub_co.publish(wall2)
             
-    def __init__(self, ns):
+    def __init__(self, ns, grasp_opened, grasp_closed):
         self.ns = ns
         self.pub_co = rospy.Publisher(ns+'/collision_object', CollisionObject)
         self.srv_ps  = rospy.ServiceProxy(ns + '/get_planning_scene', GetPlanningScene)  
@@ -204,6 +204,8 @@ class MoveitInterface:
         self.action_move = actionlib.SimpleActionClient(ns+'/move_group', MoveGroupAction)
         rospy.sleep(2.0)
         self.transit = False
+        self.grasp_opened = grasp_opened
+        self.grasp_closed = grasp_closed
         
         self.init_table()
         
@@ -211,12 +213,12 @@ class MoveitInterface:
         res = self.srv_ps(GetPlanningSceneRequest(PlanningSceneComponents(4)))
         return len(res.scene.robot_state.attached_collision_objects) > 0
         
-    def pick_one_of(self, poses, others):
+    def pick_one_of(self, poses, grasp_opened, grasp_closed, others):
         shuffle(poses)
         while not poses.empty():
             pose = poses.pop()
             r,p,y = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
-            res = self.pick(pose.position.x,pose.position.y,y, others + poses)
+            res = self.pick(pose.position.x,pose.position.y,y, grasp_opened, grasp_closed, others + poses)
             others.append(pose)
             if res in [MoveItErrorCodes.PLANNING_FAILED, MoveItErrorCodes.NO_IK_SOLUTION]:
                 continue
@@ -246,7 +248,7 @@ class MoveitInterface:
         p.pose.orientation.x,p.pose.orientation.y,p.pose.orientation.z,p.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha)
         return p
         
-    def move(names,values, others = []):
+    def move(self, names, values, others = []):
         if not self.transit:
             return
         self.transit = True
@@ -275,7 +277,7 @@ class MoveitInterface:
         p2 = deepcopy(p)
         p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi)
         
-        goal = make_pickup_goal([p,p2])
+        goal = make_pickup_goal([p,p2], self.grasp_opened, self.grasp_closed)
         goal.planning_options.planning_scene_diff.world.collision_objects = self.make_collision_objects(others)
         
         ok = self.action_pickup.send_goal_and_wait(goal)
@@ -287,16 +289,12 @@ class MoveitInterface:
         res = self.action_pickup.get_result()
         return res.error_code.val
         
-    def place_somewhere(self, poses, others=[]):
+    def place_somewhere(self, locations, others=[]):
         
         pl = []
-        for pose in poses:
-            _,_,alpha = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
-            pl.append(pose)
+        for loc in locations:
             for i in range(6):
-                p2 = deepcopy(pose)
-                p2.pose.orientation.x,p2.pose.orientation.y,p2.pose.orientation.z,p2.pose.orientation.w = tf.transformations.quaternion_from_euler(0,0,alpha + math.pi/3)
-                pl.append(p2)
+                pl.append(make_object_pose( *loc,angle=i*math.pi/3 ,offset=0.005))
         shuffle(pl)
 
         goal = make_place_goal([p,p2])
@@ -330,10 +328,15 @@ class MoveitInterface:
             return MoveItErrorCodes.FAILURE
         res = self.action_place.get_result()
         return res.error_code.val
+    def cancel(self):
+        self.action_move.cancel_goal()
+        self.action_pickup.cancel_goal()
+        self.action_place.cancel_goal()
+
 
 if __name__ == "__main__":
     rospy.init_node("test")
-    test = MoveitInterface("")
+    test = MoveitInterface("",[1.0,1.0],[0.0,0.0])
     
     others = [ test.make_object_pose(0.94,0.645,0) ]
     while not rospy.is_shutdown():
