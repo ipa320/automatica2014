@@ -11,8 +11,9 @@
         <link name="${prefix}gripper_link">
             <visual>
                 <geometry>
-                    <mesh filename="package://automatica2014_description/meshes/Lacquey/gripper_base_lacquey.stl"/>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/gripper_base_lacquey.dae"/>
                 </geometry>
+                <origin xyz="0.0 -0.0025 0.0" rpy="0 0 0"/>
             </visual>
             <collision>
                 <geometry>
@@ -26,14 +27,14 @@
             <child link="${prefix}finger_left_link" />
             <limit effort="100" lower="0" upper="1" velocity="1.0"/>
             <calibration rising="0.0"/>
-            <origin xyz="0.027 -0.0025 0.091" rpy="1.57 0 3.14"/>
+            <origin xyz="0.027 0 0.091" rpy="1.57 0 3.14"/>
             <axis xyz="0 0 1" />
         </joint>
 
         <link name="${prefix}finger_left_link">
             <visual>
                 <geometry>
-                    <mesh filename="package://automatica2014_description/meshes/Lacquey/finger_left_lacquey.stl"/>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/finger_left_lacquey.dae"/>
                 </geometry>
                 <material name="blue">
                     <color rgba="0 0 1 1"/>
@@ -54,14 +55,14 @@
             <child link="${prefix}finger_right_link" />
             <limit effort="100" lower="0" upper="1" velocity="1.0"/>
             <calibration rising="0.0"/>
-            <origin xyz="-0.027 -0.0025 0.091" rpy="-1.57 0 0"/>
+            <origin xyz="-0.027 0 0.091" rpy="-1.57 0 0"/>
             <axis xyz="0 0 -1" />
         </joint>
 
         <link name="${prefix}finger_right_link">
             <visual>
                 <geometry>
-                    <mesh filename="package://automatica2014_description/meshes/Lacquey/finger_right_lacquey.stl"/>
+                    <mesh filename="package://automatica2014_description/meshes/Lacquey/finger_right_lacquey.dae"/>
                 </geometry>
                 <material name="blue">
                     <color rgba="0 0 1 1"/>
