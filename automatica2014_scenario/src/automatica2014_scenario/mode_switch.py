@@ -67,6 +67,8 @@ class ModeSwitch:
                     self.requested_mode = self.URIS[msg.uri[0]]
             if self.current_mode != self.requested_mode:
                 self.timer.shutdown()
+                if not self.current_mode:
+                    self._call_set_io_state(self.io_state.state.pin, False)
                 self._set_mode_led(self.requested_mode, True)
                 self.timer = rospy.Timer(rospy.Duration(1), self.blink)
                 new_mode = self.requested_mode
@@ -77,10 +79,7 @@ class ModeSwitch:
     def set_mode(self, mode):
         with self.lock:
             self.timer.shutdown()
-            if self.current_mode:
-                self._set_mode_led(self.current_mode, False)
-            else:
-                self._call_set_io_state(self.io_state.state.pin, False)
+            self._set_mode_led(self.current_mode, False)
             self._set_mode_led(mode, True)
             self.current_mode = mode
             self.requested_mode = mode
