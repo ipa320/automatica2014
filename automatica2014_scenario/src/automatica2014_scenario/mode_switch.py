@@ -28,10 +28,10 @@ class ModeSwitch:
         self.io_state.state.pin = pin
         self.io_state.state.state = 1.0 if state else 0.0
         try:
-            #self.srv_set_io(self.io_state)
-            print self.io_state
+            self.srv_set_io(self.io_state)
+            #print self.io_state
         except rospy.ServiceException as ex:
-            print ex
+            #print ex
             self.srv_set_io = rospy.ServiceProxy('/ur5/arm_controller/set_io_state', SetIOState, persistent = True)
         
         
@@ -66,6 +66,8 @@ class ModeSwitch:
                 if msg.state[0] == 0:
                     self.requested_mode = self.URIS[msg.uri[0]]
             if self.current_mode != self.requested_mode:
+                self.timer.shutdown()
+                self._set_mode_led(self.requested_mode, True)
                 self.timer = rospy.Timer(rospy.Duration(1), self.blink)
                 new_mode = self.requested_mode
                 old_mode = self.current_mode
@@ -80,4 +82,15 @@ class ModeSwitch:
             self.current_mode = mode
             self.requested_mode = mode
             if not mode:
-                self.timer = rospy.Timer(rospy.Duration(1), self.blink)  
+                self.timer = rospy.Timer(rospy.Duration(1), self.blink)
+if __name__ == "__main__":
+    rospy.init_node("test")
+    test = None
+    def enable_mode(event):
+        test.set_mode(test.requested_mode)
+    def print_modes(before, after):
+        print before, after
+        rospy.Timer(rospy.Duration(5),enable_mode, True)
+    test = ModeSwitch(print_modes)
+    rospy.spin()
+
