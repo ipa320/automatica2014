@@ -77,7 +77,10 @@ class ModeSwitch:
     def set_mode(self, mode):
         with self.lock:
             self.timer.shutdown()
-            self._set_mode_led(self.current_mode, False)
+            if self.current_mode:
+                self._set_mode_led(self.current_mode, False)
+            else:
+                self._call_set_io_state(self.io_state.state.pin, False)
             self._set_mode_led(mode, True)
             self.current_mode = mode
             self.requested_mode = mode
