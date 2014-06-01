@@ -10,6 +10,7 @@ from geometry_msgs.msg import PoseStamped, PoseArray
 from copy import deepcopy
 import math
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from random import shuffle
 
 from actionlib_msgs.msg import GoalStatus 
 def make_plane(name, pose, normal = (0, 0, 1), offset = 0):
@@ -74,7 +75,7 @@ def make_pickup_goal(poses, opened, closed):
     #float32 max_contact_force
 
     #string[] allowed_touch_objects
-    goal.possible_grasps = [make_top_grasp(pose, closed, opened) for pose in poses] 
+    goal.possible_grasps = [make_top_grasp(pose, opened, closed) for pose in poses] 
     
     goal.support_surface_name = "table"
     goal.allow_gripper_support_collision = False
@@ -117,17 +118,17 @@ def make_place_goal(poses):
 
 def make_move_goal(joints,values):
     goal = MoveGroupGoal()
-    goal.group_name = arm
-    goal.allowed_planning_time = 5.0
+    goal.request.group_name = "arm"
+    goal.request.allowed_planning_time = 5.0
     
     c = Constraints()
     for (n,v) in zip(joints,values):
         jc = JointConstraint()
-        jc.name = j
+        jc.joint_name = n
         jc.position = v
         jc.tolerance_above = jc.tolerance_below = 0.005
     c.joint_constraints.append(jc)
-    goal.goal_constraints = [c]
+    goal.request.goal_constraints = [c]
 
     goal.planning_options.planning_scene_diff.is_diff = True
     goal.planning_options.planning_scene_diff.robot_state.is_diff = True
@@ -213,25 +214,25 @@ class MoveitInterface:
         res = self.srv_ps(GetPlanningSceneRequest(PlanningSceneComponents(4)))
         return len(res.scene.robot_state.attached_collision_objects) > 0
         
-    def pick_one_of(self, poses, grasp_opened, grasp_closed, others):
+    def pick_one_of(self, poses, others):
         shuffle(poses)
-        while not poses.empty():
+        while len(poses):
             pose = poses.pop()
             r,p,y = tf.transformations.euler_from_quaternion([pose.orientation.x, pose.orientation.y , pose.orientation.z, pose.orientation.w])
-            res = self.pick(pose.position.x,pose.position.y,y, grasp_opened, grasp_closed, others + poses)
+            res = self.pick(pose.position.x,pose.position.y,y, others + poses)
             others.append(pose)
             if res in [MoveItErrorCodes.PLANNING_FAILED, MoveItErrorCodes.NO_IK_SOLUTION]:
                 continue
             else:
                 break
-        return res == MoveItErrorCodes.SUCCESS
+        return res
         
     def make_collision_objects(self, poses):
         objs = []
         i = 0
         for p in poses:
-            _,_,angle = tf.transformations.euler_from_quaternion([p.pose.orientation.x, p.pose.orientation.y , p.pose.orientation.z, p.pose.orientation.w])
-            objs.append(make_box("object_"+str(i), self.make_object_pose(p.pose.position.x,p.pose.position.y,angle), (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
+            _,_,angle = tf.transformations.euler_from_quaternion([p.orientation.x, p.orientation.y , p.orientation.z, p.orientation.w])
+            objs.append(make_box("object_"+str(i), self.make_object_pose(p.position.x,p.position.y,angle), (self.OBJECT_HEIGHT,self.OBJECT_LENGTH,self.OBJECT_HEIGHT)))
             i += 1
         return objs
         
@@ -249,18 +250,18 @@ class MoveitInterface:
         return p
         
     def move(self, names, values, others = []):
-        if not self.transit:
-            return
+        if self.transit:
+            return MoveItErrorCodes.SUCCESS # TODO
         self.transit = True
-        self.action_pickup.cancel()
-        self.action_pickup.cancel()
+        self.action_pickup.cancel_goal()
+        self.action_place.cancel_goal()
 
         goal = make_move_goal(names, values)
         goal.planning_options.planning_scene_diff.world.collision_objects = self.make_collision_objects(others)
         
-        ok = self.action_pickup.send_goal_and_wait(goal)
+        ok = self.action_move.send_goal_and_wait(goal)
         if ok != GoalStatus.SUCCEEDED:
-            return false
+            return MoveItErrorCodes.FAILURE
         res = self.action_move.get_result()
         self.transit = False
         return res.error_code.val == MoveItErrorCodes.SUCCESS
@@ -294,20 +295,18 @@ class MoveitInterface:
         pl = []
         for loc in locations:
             for i in range(6):
-                pl.append(make_object_pose( *loc,angle=i*math.pi/3 ,offset=0.005))
+                pl.append(self.make_object_pose( *loc,alpha=i*math.pi/3 ,offset=0.005))
         shuffle(pl)
 
-        goal = make_place_goal([p,p2])
+        goal = make_place_goal(pl)
         goal.planning_options.planning_scene_diff.world.collision_objects = self.make_collision_objects(others)
 
         ok = self.action_place.send_goal_and_wait(goal)
         
         if ok != GoalStatus.SUCCEEDED:
-            return False
+            return MoveItErrorCodes.FAILURE
         res = self.action_place.get_result()
-        return res.error_code.val == MoveItErrorCodes.SUCCESS
-        
-        return res == MoveItErrorCodes.SUCCESS
+        return res.error_code.val
     def place(self, x,y, alpha, others=[], force = False):
         if not self.is_grasped():
            print "not grasped"
